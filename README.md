@@ -1,7 +1,7 @@
 Advanced Settings for WordPress
 ===============
 
-This is an essential plugin for your WordPress websites:
+This is an essential plugin for your WordPress sites:
 
 - Manage Post Types
 - Disable The “Please Update Now” Message On WordPress Dashboard
@@ -39,6 +39,6 @@ This is an essential plugin for your WordPress websites:
 - Remove any filter you want
 and more to come ...
 
-Visit: http://araujo.cc/donate/
+Visit: http://araujo.cc/
 
 "Simplicity is the ultimate sophistication" -- Da Vinci

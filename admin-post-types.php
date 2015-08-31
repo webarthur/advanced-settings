@@ -238,7 +238,7 @@
 					  <span class="edit">
 						<a href="#" onclick="show_form('<?php echo $post_type->name ?>');">Edit</a> 
 					  </span>
-							| <a href="options-general.php?page=post-types&delete_posttype=<?php echo $post_type->name ?>" title="default categories" class="thickbox">delete</a>
+							| <a href="options-general.php?page=post-types&delete_posttype=<?php echo $post_type->name ?>" title="default categories">delete</a>
 						<?php } else echo '&nbsp;'; ?>
 									   
 					</div>
