@@ -5,7 +5,7 @@ Plugin URI: http://araujo.cc/wordpress/advanced-settings/
 Description: Get advanced settings and change all you imagine that are not provided by WordPress.
 Author: Arthur Araújo
 Author URI: http://araujo.cc
-Version: 2.2.1
+Version: 2.2.2
 */
 
 define('ADVSET_DIR', dirname(__FILE__));
