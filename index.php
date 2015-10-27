@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Advanced Settings
-Plugin URI: http://tutzstyle.com/portfolio/advanced-settings/
+Plugin URI: http://araujo.cc/wordpress/advanced-settings/
 Description: Get advanced settings and change all you imagine that are not provided by WordPress.
 Author: Arthur Araújo
-Author URI: http://tutzstyle.com
-Version: 2.2
+Author URI: http://araujo.cc
+Version: 2.2.1
 */
 
 define('ADVSET_DIR', dirname(__FILE__));
@@ -18,15 +18,15 @@ function advset_page_code() { include ADVSET_DIR.'/admin-code.php'; }
 function advset_page_posttypes() { include ADVSET_DIR.'/admin-post-types.php'; }
 
 if( is_admin() ) {
-	
-	define('ADVSET_URL', 'http://tutzstyle.com/portfolio/advanced-settings/');
+
+	define('ADVSET_URL', 'http://araujo.cc/wordpress/advanced-settings/');
 
 	# Admin menu
 	add_action('admin_menu', 'advset_menu');
 
 	# Add plugin option in Plugins page
 	add_filter( 'plugin_action_links', 'advset_plugin_action_links', 10, 2 );
-	
+
 	if( $settings=get_option('powerconfigs') ) {
 		update_option('advset_code', $settings);
 		update_option('advset_system', $settings);
@@ -36,7 +36,7 @@ if( is_admin() ) {
 
 	// update settings
 	if( isset($_POST['option_page']) && $_POST['option_page']=='advanced-settings' ) {
-		
+
 		function advset_update() {
 
 			// security
@@ -45,15 +45,15 @@ if( is_admin() ) {
 
 			// define option name
 			$setup_name = 'advset_'.$_POST['advset_group'];
-			
+
 			// get configuration
 			// $advset_options=get_option($setup_name);
-			
+
 			// prepare option group
 			$_POST[$setup_name] = $_POST;
-			
+
 			/*$_POST[$setup_name] = array_merge( $advset_options, $_POST );*/
-			
+
 			unset(
 				$_POST[$setup_name]['option_page'],
 				$_POST[$setup_name]['action'],
@@ -61,34 +61,34 @@ if( is_admin() ) {
 				$_POST[$setup_name]['_wp_http_referer'],
 				$_POST[$setup_name]['submit']
 			);
-			
+
 			if( $_POST[$setup_name]['auto_thumbs'] )
 				$_POST[$setup_name]['add_thumbs'] = '1';
-			
+
 			if( $_POST[$setup_name]['remove_widget_system'] )
 				$_POST[$setup_name]['remove_default_wp_widgets'] = '1';
-			
+
 			// $_POST[$setup_name]['remove_filters'] = advset_option( 'remove_filters' );
-			
+
 			//print_r($_POST[$setup_name]);
 			///die();
-			
+
 			// save settings
 			register_setting( 'advanced-settings', $setup_name );
-			
+
 		}
 		add_action( 'admin_init', 'advset_update' );
 	}
-	
+
 }
 
 // get a advanced-settings option
 function advset_option( $option_name, $default='' ) {
 	global $advset_options;
-	
+
 	if( !isset($advset_options) )
 		$advset_options = get_option('advset_code', array())+get_option('advset_system', array());
-	
+
 	if( isset($advset_options[$option_name]) )
 		return $advset_options[$option_name];
 	else
@@ -118,7 +118,7 @@ function advset_menu() {
 # Add plugin option in Plugins page
 function advset_plugin_action_links( $links, $file ) {
 	if ( $file == plugin_basename( basename(dirname(__FILE__)).'/index.php' ) ) {
-		$links[] = '<a href="options-general.php?page=advanced-settings">'.__('Settings').'</a>';
+		$links[] = '<a href="options-general.php?page=advanced-settings-system">'.__('Settings').'</a>';
 	}
 
 	return $links;
@@ -136,10 +136,10 @@ if( advset_option('remove_menu') )
 # Configure FeedBurner
 if( advset_option('feedburner') ) {
 	function appthemes_custom_rss_feed( $output, $feed ) {
-		
+
 		if ( strpos( $output, 'comments' ) )
 			return $output;
-		
+
 		if( strpos(advset_option('feedburner'), '/')===FALSE )
 			return esc_url( 'http://feeds.feedburner.com/'.advset_option('feedburner') );
 		else
@@ -150,7 +150,7 @@ if( advset_option('feedburner') ) {
 
 # Favicon
 if( advset_option('favicon') ) {
-	
+
 	function __advsettings_favicon() {
 		if( file_exists(TEMPLATEPATH.'/favicon.ico') )
 			echo '<link rel="shortcut icon" href="'.get_bloginfo('template_url').'/favicon.ico'.'">'."\r\n";
@@ -174,15 +174,15 @@ if( advset_option('single_metas') ) {
 	function __advsettings_single_metas() {
 		global $post;
 		if( is_single() || is_page() ) {
-			
+
 			$tag_list = get_the_terms( $post->ID, 'post_tag' );
-			
+
 			if( $tag_list ) {
 				foreach( $tag_list as $tag )
 					$tag_array[] = $tag->name;
 				echo '<meta name="keywords" content="'.implode(', ', $tag_array).'" />'."\r\n";
 			}
-				
+
 			$excerpt = strip_tags($post->post_content);
 			$excerpt = strip_shortcodes($excerpt);
 			$excerpt = str_replace(array('\n', '\r', '\t'), ' ', $excerpt);
@@ -242,10 +242,10 @@ if( advset_option('post_type_pag') ) {
 
 # REL External
 if( advset_option('disable_auto_save') ) {
-	function __advsettings_disable_auto_save(){  
-		wp_deregister_script('autosave');  
-	}  
-	add_action( 'wp_print_scripts', '__advsettings_disable_auto_save' );  
+	function __advsettings_disable_auto_save(){
+		wp_deregister_script('autosave');
+	}
+	add_action( 'wp_print_scripts', '__advsettings_disable_auto_save' );
 }
 
 # Remove wptexturize
@@ -260,7 +260,17 @@ if( advset_option('compress') || advset_option('remove_comments') ) {
 	add_action('template_redirect','____template');
 	function ____template() { ob_start('____template2'); }
 	function ____template2($code) {
-		
+
+		# insert Google Tag Manager ID code
+		if( advset_option('gtag_manager') )
+			$code = preg_replace( '/(<div[^>]*>)/', '$1<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-XXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':
+new Date().getTime(),event:\'gtm.js\'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=
+\'//www.googletagmanager.com/gtm.js?id=\'+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,\'script\',\'dataLayer\',\'GTM-XXXX\');</script>', $code );
+
 		# dont remove conditional IE comments "<!--[if IE]>"
 		if( advset_option('remove_comments') )
 			$code = preg_replace('/<!--[^\[\>\<](.|\s)*?-->/', '', $code);
@@ -278,7 +288,7 @@ if( advset_option('compress') || advset_option('remove_comments') ) {
 		#$code = str_encode( $code );
 
 		return $code;
-		
+
 	}
 }
 
@@ -293,7 +303,7 @@ if( advset_option('remove_comments_system') ) {
 		return false;
 	}
 	add_filter( 'comments_open', '__av_comments_close', 10, 2 );
-	
+
 	function __av_empty_comments_array( $open, $post_id ) {
 		return array();
 	}
@@ -304,7 +314,7 @@ if( advset_option('remove_comments_system') ) {
 		remove_menu_page( 'edit-comments.php' );
 	}
 	add_action( 'admin_menu', '__av_remove_admin_menus' );
-	
+
 	// Removes from admin bar
 	function __av_admin_bar_render() {
 		global $wp_admin_bar;
@@ -312,11 +322,11 @@ if( advset_option('remove_comments_system') ) {
 	}
 	add_action( 'wp_before_admin_bar_render', '__av_admin_bar_render' );
 }
-	
+
 # Google Analytics
 if( advset_option('analytics') ) {
 	add_action('wp_footer', '____analytics'); // Load custom styles
-	function ____analytics(){ 
+	function ____analytics(){
 		echo '<script type="text/javascript">
 var _gaq = _gaq || [];_gaq.push([\'_setAccount\', \''.advset_option('analytics').'\']);_gaq.push([\'_trackPageview\']);
 (function() {
@@ -331,12 +341,12 @@ var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(
 # Remove admin menu
 if( advset_option('show_query_num') ) {
 	function __show_sql_query_num(){
-		
+
 		if( !current_user_can('manage_options') )
 			return;
-		
+
 		global $wpdb;
-		
+
 		echo '<div style="font-size:10px;text-align:center">'.
 				$wpdb->num_queries.' '.__('SQL queries have been executed to show this page in ').
 				timer_stop().__('seconds').
@@ -380,7 +390,7 @@ if( advset_option('author_bio_html') )
 
 # remove_widget_system
 if( advset_option('remove_default_wp_widgets') || advset_option('remove_widget_system') ) {
-	
+
 	function advset_unregister_default_wp_widgets() {
 		unregister_widget('WP_Widget_Pages');
 		unregister_widget('WP_Widget_Calendar');
@@ -405,23 +415,23 @@ if( advset_option('remove_widget_system') ) {
 	function advset_remove_widget_support() {
 		remove_theme_support( 'widgets' );
 	}
-	add_action( 'after_setup_theme', 'advset_remove_widget_support', 11 ); 
-	
+	add_action( 'after_setup_theme', 'advset_remove_widget_support', 11 );
+
 	# it works fine
 	function advset_remove_widget_system() {
 		global $wp_widget_factory;
 		$wp_widget_factory->widgets = array();
-		
+
 	}
 	add_action('widgets_init', 'advset_remove_widget_system', 1);
-	
+
 	# this maybe dont work properly
-	function disable_all_widgets( $sidebars_widgets ) { 
-		$sidebars_widgets = array( false ); 
-		return $sidebars_widgets; 
+	function disable_all_widgets( $sidebars_widgets ) {
+		$sidebars_widgets = array( false );
+		return $sidebars_widgets;
 	}
-	add_filter( 'sidebars_widgets', 'disable_all_widgets' ); 
-	
+	add_filter( 'sidebars_widgets', 'disable_all_widgets' );
+
 	# remove widgets from menu
 	function advset_remove_widgets_from_menu() {
 	  $page = remove_submenu_page( 'themes.php', 'widgets.php' );
@@ -431,17 +441,17 @@ if( advset_option('remove_widget_system') ) {
 
 # auto post thumbnails
 if( advset_option('auto_thumbs') ) {
-	
+
 	// based on "auto posts plugin" 3.3.2
-	
+
 	// check post status
 	function advset_check_post_status( $new_status='' ) {
 		global $post_ID;
-		
+
 		if ('publish' == $new_status)
 			advset_publish_post($post_ID);
 	}
-	
+
 	//
 	function advset_publish_post( $post_id ) {
 		global $wpdb;
@@ -487,8 +497,8 @@ if( advset_option('auto_thumbs') ) {
 			}
 		}
 	}
-	
-	
+
+
 	function advset_generate_post_thumbnail( $matches, $key, $post_content, $post_id ) {
 		// Make sure to assign correct title to the image. Extract it from img tag
 		$imageTitle = '';
@@ -566,9 +576,9 @@ if( advset_option('auto_thumbs') ) {
    	}
 
 	add_action('transition_post_status', 'advset_check_post_status');
-	
+
 	if( !function_exists('curl_get_file_contents') ) {
-		
+
 		function curl_get_file_contents($URL) {
 			$c = curl_init();
 			curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
@@ -582,9 +592,9 @@ if( advset_option('auto_thumbs') ) {
 
 			return FALSE;
 		}
-		
+
 	}
-	
+
 }
 
 # excerpt length
@@ -627,9 +637,9 @@ if( !is_admin() && advset_option('facebook_og_metas') ) {
 	function advset_facebook_og_metas() {
 		global $post;
 		if (is_single() || is_page()) { ?>
-			<meta property="og:title" content="<?php single_post_title(''); ?>" />  
-			<meta property="og:description" content="<?php echo strip_tags(get_the_excerpt($post->ID)); ?>" />  
-			<meta property="og:type" content="article" />  
+			<meta property="og:title" content="<?php single_post_title(''); ?>" />
+			<meta property="og:description" content="<?php echo strip_tags(get_the_excerpt($post->ID)); ?>" />
+			<meta property="og:type" content="article" />
 			<meta property="og:image" content="<?php if (function_exists('wp_get_attachment_thumb_url')) {echo wp_get_attachment_url(get_post_thumbnail_id($post->ID)); }?>" />
 		<?php }
 	}
@@ -650,10 +660,10 @@ if( !is_admin() && advset_option('remove_rsd') ) {
 if( advset_option('config_wp_title') ) {
 	function advset_wp_title( $title, $sep ) {
 		global $paged, $page;
-		
+
 		if ( is_feed() )
 			return $title;
-		
+
 		// Add the site name.
 		$title .= get_bloginfo( 'name' );
 
@@ -676,11 +686,11 @@ if( advset_option('config_wp_title') ) {
 
 # image sizes
 if( $_POST && (advset_option('max_image_size_w')>0 || advset_option('max_image_size_h')>0) ) {
-	
+
 	// From "Resize at Upload Plus" 1.3
-	
+
 	/* This function will apply changes to the uploaded file */
-	function advset_resize_image( $array ) { 
+	function advset_resize_image( $array ) {
 	  // $array contains file, url, type
 	  if ($array['type'] == 'image/jpeg' OR $array['type'] == 'image/gif' OR $array['type'] == 'image/png') {
 		// there is a file to handle, so include the class and get the variables
@@ -688,7 +698,7 @@ if( $_POST && (advset_option('max_image_size_w')>0 || advset_option('max_image_s
 		$maxwidth = advset_option('max_image_size_w');
 		$maxheight = advset_option('max_image_size_h');
 		$imagesize = getimagesize($array['file']); // $imagesize[0] = width, $imagesize[1] = height
-		
+
 		if ( $maxwidth == 0 OR $maxheight == 0) {
 			if ($maxwidth==0) {
 				$objResize = new RVJ_ImageResize($array['file'], $array['file'], 'H', $maxheight);
@@ -696,7 +706,7 @@ if( $_POST && (advset_option('max_image_size_w')>0 || advset_option('max_image_s
 			if ($maxheight==0) {
 				$objResize = new RVJ_ImageResize($array['file'], $array['file'], 'W', $maxwidth);
 			}
-		} else {	
+		} else {
 			if ( ($imagesize[0] >= $imagesize[1]) AND ($maxwidth * $imagesize[1] / $imagesize[0] <= $maxheight) )  {
 				$objResize = new RVJ_ImageResize($array['file'], $array['file'], 'W', $maxwidth);
 			} else {
@@ -707,14 +717,14 @@ if( $_POST && (advset_option('max_image_size_w')>0 || advset_option('max_image_s
 	  return $array;
 	} // function
 	add_action('wp_handle_upload', 'advset_resize_image');
-	
+
 }
 
 # remove filters if not in filters admin page
 $remove_filters = get_option( 'advset_remove_filters' );
 if( !isset($_GET['page'])
 	|| $_GET['page']!='advanced-settings-filters' && is_array($remove_filters) ) {
-	
+
 	if( isset($remove_filters) && is_array($remove_filters) )
 		foreach( $remove_filters as $tag=>$array )
 			if( is_array($array) )
@@ -727,7 +737,7 @@ if( !isset($_GET['page'])
 if( is_admin() && defined('WPLANG') && WPLANG=='pt_BR' ) {
 	add_filter( 'gettext', 'advset_translate', 10, 3 );
 	global $advset_ptbr;
-	
+
 	$advset_ptbr = array(
 		'Be careful, removing a filter can destabilize your system. For security reasons, no filter removal has efects over this page.' => 'Cuidado! Remover um filtro pode desestabilizar seu sistema. Por segurança, nenhum filtro removido terá efeito nesta página.',
 		'it\'s don\'t remove conditional IE comments like' => 'não remove os comentários condicionais do IE, exemplo:',
@@ -779,11 +789,11 @@ if( is_admin() && defined('WPLANG') && WPLANG=='pt_BR' ) {
 }
 
 function advset_translate( $text ) {
-	
+
 	global $advset_ptbr;
-	
+
 	$array = $advset_ptbr;
-	
+
     if( isset($array[$text]) )
 		return $array[$text];
 	else
@@ -796,45 +806,45 @@ function advset_translate( $text ) {
 add_action('wp_ajax_advset_filters', 'prefix_ajax_advset_filters');
 function prefix_ajax_advset_filters() {
     //echo $_POST['tag'].' - '.$_POST['function'];
-    
+
     // security
     if( !current_user_can('manage_options') )
 		return false;
-    
+
     $remove_filters = (array) get_option( 'advset_remove_filters' );
     $tag = (string)$_POST['tag'];
     $function = (string)$_POST['function'];
-    
+
     if( $_POST['enable']=='true' )
 		unset($remove_filters[$tag][$function]);
     else if ( $_POST['enable']=='false' )
 		$remove_filters[$tag][$function] = 1;
-    
+
     update_option( 'advset_remove_filters', $remove_filters );
-    
+
     //echo $_POST['enable'];
-    
+
     return true;
 }
 
 # Post Types
 add_action( 'init', 'advset_register_post_types' );
 function advset_register_post_types() {
-	
+
 	$post_types = (array) get_option( 'adv_post_types', array() );
-	
+
 	#print_r($post_types);
 	#die();
-	
+
 	if( is_admin() && current_user_can('manage_options') && isset($_GET['delete_posttype']) ) {
 		unset($post_types[$_GET['delete_posttype']]);
 		update_option( 'adv_post_types', $post_types );
 	}
-	
+
 	if( is_admin() && current_user_can('manage_options') && isset($_POST['advset_action_posttype']) ) {
-		
+
 		extract($_POST);
-		
+
 		$labels = array(
 			'name' => $label,
 			#'singular_name' => @$singular_name,
@@ -846,29 +856,29 @@ function advset_register_post_types() {
 			#'view_item' => @$view_item,
 			#'search_items' => @$search_items,
 			#'not_found' =>  @$not_found,
-			#'not_found_in_trash' => @$not_found_in_trash, 
+			#'not_found_in_trash' => @$not_found_in_trash,
 			#'parent_item_colon' => @$parent_item_colon,
 			#'menu_name' => @$menu_name
 		);
-		
+
 		$post_types[$type] = array(
 			'labels' 		=> $labels,
 			'public' 		=> (bool)@$public,
 			'publicly_queryable' => (bool)@$publicly_queryable,
-			'show_ui' 		=> (bool)@$show_ui, 
-			'show_in_menu' 	=> (bool)@$show_in_menu, 
+			'show_ui' 		=> (bool)@$show_ui,
+			'show_in_menu' 	=> (bool)@$show_in_menu,
 			'query_var' 	=> (bool)@$query_var,
 			#'rewrite' 		=> array( 'slug' => 'book' ),
 			#'capability_type' => 'post',
-			'has_archive' 	=> (bool)@$has_archive, 
+			'has_archive' 	=> (bool)@$has_archive,
 			'hierarchical' 	=> (bool)@$hierarchical,
 			#'menu_position' => (int)@$menu_position,
 			'supports' 		=> (array)$supports,
 			'taxonomies' 	=> (array)$taxonomies,
 		);
-		
+
 		update_option( 'adv_post_types', $post_types );
-		
+
 	}
 	#print_r($post_types);
 	if( sizeof($post_types)>0 )
@@ -877,26 +887,26 @@ function advset_register_post_types() {
 			if( in_array( 'thumbnail', $args['supports'] ) ) {
 				add_theme_support( 'post-thumbnails', array( $post_type, 'post' ) );
 				/*global $_wp_theme_features;
-				
+
 				if( !is_array($_wp_theme_features[ 'post-thumbnails' ]) )
 					$_wp_theme_features[ 'post-thumbnails' ] = array();
-				
+
 				$_wp_theme_features[ 'post-thumbnails' ][0][]= $post_type;*/
-				
+
 				#print_r($_wp_theme_features[ 'post-thumbnails' ]);
 			}
 		}
-		
+
 }
 
 # THE ADMIN FILTERS PAGE
 function advset_page_filters() { ?>
-	
+
 	<div class="wrap">
-		
+
 		<?php
 			$external_plugin_name = 'Advanced Settings';
-			$external_plugin_url = 'http://tutzstyle.com/portfolio/advanced-settings/';
+			$external_plugin_url = 'http://araujo.cc/wordpress/advanced-settings/';
 		?>
 		<div style="float:right;width:400px">
 			<div style="float:right; margin-top:10px">
@@ -907,35 +917,35 @@ function advset_page_filters() { ?>
 					</strong>
 			</div>
 		</div>
-		
+
 		<div id="icon-options-general" class="icon32"><br></div>
 		<h2><?php _e('Filters/Actions') ?> <sub style="color:red">beta</sub></h2>
-		
+
 		<div>&nbsp;</div>
-		
+
 		<div id="message" class="error"><?php _e('Be careful, removing a filter can destabilize your system. For security reasons, no filter removal has efects over this page.') ?></div>
-		
+
 		<?php
 		global $wp_filter;
-		
+
 		$hook=$wp_filter;
 		ksort($hook);
-		
+
 		$remove_filters = (array) get_option( 'advset_remove_filters' );
-		
+
 		//print_r($remove_filters);
-		
+
 		echo '<table id="advset_filters" style="font-size:90%">
 			<tr><td>&nbsp;</td><td><strong>'.__('priority').'</strong></td></tr>';
-		
+
 		foreach($hook as $tag => $priority){
 			echo "<tr><th align='left'>[<a target='_blank' href='http://wpseek.com/$tag/'>$tag</a>]</th></tr>";
 			ksort($priority);
 			foreach($priority as $priority => $function){
 				foreach($function as $function => $properties) {
-					
+
 					$checked = isset($remove_filters[$tag][$function]) ? '': "checked='checked'";
-					
+
 					echo "<tr><td> <label><input type='checkbox' name='$tag' value='$function' $checked />
 						$function</label>
 						<sub><a target='_blank' href='http://wpseek.com/$function/'>help</a></sub></td>
@@ -946,7 +956,7 @@ function advset_page_filters() { ?>
 		}
 		echo '</table>';
 		?>
-		
+
 		<script>
 		jQuery('#advset_filters input').click(function(){
 			jQuery.post( '<?php echo admin_url('admin-ajax.php'); ?>',
@@ -955,14 +965,14 @@ function advset_page_filters() { ?>
 					  'tag':this.name,
 					  'function':this.value,
 					  'enable':this.checked
-				   }, 
+				   },
 				   function(response){
 					 //alert('The server responded: ' + response);
 				   }
 			);
 		});
 		</script>
-			
+
 	</div>
 	<?php
 }

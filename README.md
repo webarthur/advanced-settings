@@ -24,7 +24,8 @@ This is an essential plugin for your WordPress sites:
 - Remove unnecessary jQuery migrate script
 - Compact HTML code
 - Disable Posts Auto Saving
-- Insert google analytics code
+- Insert Google analytics code
+- Insert Google Tag Manager ID code
 - Remove header WordPress generator meta tag
 - Remove header WLW Manifest meta tag
 - Remove header RSD meta tag

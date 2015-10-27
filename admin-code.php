@@ -1,7 +1,7 @@
 <?php defined('ABSPATH') or exit; ?>
 
 <div class="wrap">
-	
+
 	<?php
 		$external_plugin_name = 'Advanced Settings';
 		$external_plugin_url = ADVSET_URL;
@@ -15,18 +15,18 @@
 				</strong>
 		</div>
 	</div>
-	
+
 	<div id="icon-options-general" class="icon32"><br></div>
 	<h2><?php _e('HTML Code'); ?></h2>
-	
+
 	<form action="options.php" method="post">
-		
+
 		<input type="hidden" name="advset_group" value="code" />
-		
+
 		<?php settings_fields( 'advanced-settings' ); ?>
-		
+
 		<table class="form-table">
-			
+
 			<tr valign="top">
 				<th scope="row"><?php _e('Header'); ?></th>
 				<td>
@@ -34,36 +34,36 @@
 
 						<input name="facebook_og_metas" type="checkbox" id="facebook_og_metas" value="1" <?php advset_check_if('facebook_og_metas') ?>>
 						<?php _e('Fix incorrect Facebook thumbnails including OG metas') ?> </label>
-					
+
 					<br />
 					<label for="remove_menu">
 
 						<input name="remove_menu" type="checkbox" id="remove_menu" value="1" <?php advset_check_if('remove_menu') ?>>
 						<?php _e('Hide top admin menu') ?> </label>
-					
+
 					<br />
 					<label for="favicon">
 						<input name="favicon" type="checkbox" id="favicon" value="1" <?php advset_check_if('favicon') ?> />
 						<?php _e('Automatically add a FavIcon') ?> <i style="color:#999">(<?php _e('whenever there is a favicon.ico or favicon.png file in the template folder') ?>)</i></label>
 						</label>
-					
+
 					<br />
 					<label for="description">
 						<input name="description" type="checkbox" id="description" value="1" <?php advset_check_if('description') ?> />
 						<?php _e('Add a description meta tag using the blog description') ?> (SEO)
 						</label>
-					
+
 					<br />
 					<label for="single_metas">
 						<input name="single_metas" type="checkbox" id="single_metas" value="1" <?php advset_check_if('single_metas') ?> />
 						<?php _e('Add description and keywords meta tags in each posts') ?> (SEO)
 						</label>
-					
+
 					<br />
 					<label for="remove_generator">
 						<input name="remove_generator" type="checkbox" id="remove_generator" value="1" <?php advset_check_if('remove_generator') ?> />
 						<?php _e('Remove header WordPress generator meta tag') ?></label>
-					
+
 					<br />
 					<label for="remove_wlw">
 						<input name="remove_wlw" type="checkbox" id="remove_wlw" value="1" <?php advset_check_if('remove_wlw') ?> />
@@ -84,31 +84,31 @@
 						<input name="config_wp_title" type="checkbox" id="config_wp_title" value="1" <?php advset_check_if('config_wp_title') ?> />
 						<?php _e('Configure site title to use just the wp_title() function') ?> <i style="color:#999">(<?php _e('better for hardcode programming') ?>)</i></label>
 					<!--p class="description"><?php _e('better for hardcode programming') ?></p-->
-					
+
 				</td>
 			</tr>
-			
+
 			<tr valign="top">
 				<th scope="row"><?php _e('Content'); ?></th>
 				<td>
 					<label for="excerpt_limit">
 						<?php _e('Limit the excerpt length to') ?>
 						<input name="excerpt_limit" type="text" size="2" maxlength="10" id="excerpt_limit" value="<?php echo (int) advset_option( 'excerpt_limit' ) ?>" />
-						<?php _e('words') ?> 
+						<?php _e('words') ?>
 						</label>
-					
+
 					<br />
 					<label for="excerpt_more_text">
 						<?php _e('Add a read more link after excerpt with the text: ') ?>
 						<input name="excerpt_more_text" type="text" size="10" id="excerpt_more_text" value="<?php echo advset_option( 'excerpt_more_text', '' ) ?>" />
 						</label>
-					
+
 					<br />
 					<label for="remove_wptexturize">
 						<input name="remove_wptexturize" type="checkbox" id="remove_wptexturize" value="1" <?php advset_check_if('remove_wptexturize') ?> />
 						<?php _e('Remove wptexturize filter') ?> <i style="color:#999">(<?php _e('transformations of quotes to smart quotes, apostrophes, dashes, ellipses, the trademark symbol, and the multiplication symbol') ?>)</i>
 						</label>
-					
+
 				</td>
 			</tr>
 
@@ -117,14 +117,14 @@
 				<td>
 					<label for="author_bio">
 						<input name="author_bio" type="checkbox" id="author_bio" value="1" <?php advset_check_if('author_bio') ?> />
-						<?php _e('Insert author bio in each post') ?></label>			
-					
+						<?php _e('Insert author bio in each post') ?></label>
+
 					<br />
-					
+
 					<label for="author_bio_html">
 						<input name="author_bio_html" type="checkbox" id="author_bio_html" value="1" <?php advset_check_if('author_bio_html') ?> />
-						<?php _e('Allow HTML in user profile') ?></label>			
-					
+						<?php _e('Allow HTML in user profile') ?></label>
+
 				</td>
 			</tr>
 
@@ -135,7 +135,7 @@
 						<input name="jquery_remove_migrate" type="checkbox" id="jquery_remove_migrate" value="1" <?php advset_check_if('jquery_remove_migrate') ?> />
 						<?php _e('Remove unnecessary jQuery migrate script (jquery-migrate.min.js)') ?>
 						</label>
-					
+
 					<br />
 					<label for="jquery_cnd">
 						<input name="jquery_cnd" type="checkbox" id="jquery_cnd" value="1" <?php advset_check_if('jquery_cnd') ?> />
@@ -144,7 +144,7 @@
 
 				</td>
 			</tr>
-			
+
 			<tr valign="top">
 				<th scope="row"><?php _e('Optimize'); ?></th>
 				<td>
@@ -152,7 +152,7 @@
 						<input name="compress" type="checkbox" id="compress" value="1" <?php advset_check_if('compress') ?> />
 						<?php _e('Compress all code') ?>
 						</label>
-					
+
 					<br />
 					<label for="remove_comments">
 						<input name="remove_comments" type="checkbox" id="remove_comments" value="1" <?php advset_check_if('remove_comments') ?> />
@@ -161,7 +161,7 @@
 
 				</td>
 			</tr>
-			
+
 			<tr valign="top">
 				<th scope="row">
 					<?php _e('Google Analytics ID'); ?> <br />
@@ -174,7 +174,20 @@
 
 				</td>
 			</tr>
-			
+
+			<tr valign="top">
+				<th scope="row">
+					<?php _e('Google Tag Manager ID'); ?> <br />
+					<i style="color:#999"><?php _e('inserts a javascript code immediately after the opening <body> tag') ?></i>
+				</th>
+				<td>
+					<label for="gtag_manager">
+						<input name="gtag_manager" type="text" size="12" id="gtag_manager" value="<?php echo advset_option('gtag_manager') ?>" />
+						</label>
+
+				</td>
+			</tr>
+
 			<tr valign="top">
 				<th scope="row"><?php _e('FeedBurner'); ?></th>
 				<td>
@@ -183,9 +196,9 @@
 						</label>
 				</td>
 			</tr>
-			
+
 		</table>
-		
-		<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php _e('Save changes') ?>"></p>	
+
+		<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="<?php _e('Save changes') ?>"></p>
 	</form>
 </div>
