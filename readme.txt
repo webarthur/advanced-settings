@@ -5,9 +5,17 @@ Plugin URI: http://araujo.cc/wordpress/advanced-settings/
 Tags: settings, hacks, option, admin, menu, page, image, setting, images, google, analytics, compress, html, thumbnail, post type, auto save, seo, keywords, favicon, feedburner, compact, comments, remove comments, hide comments, author, resize at upload, auto post thumbnails, filters, widget, postype
 Requires at least: 3.0
 Tested up to: 4.3
-Stable tag: 2.2.2
+Stable tag: 2.3.1
 License: GPLv2 or later
 Get advanced settings and change all you imagine that are not provided by WordPress.
+
+== New Features ==
+
+* New admin page: Scripts
+* Remove *type="text/javascript"* attribute from &lt;script&gt; tag
+* Track and list enqueued scripts
+* Merge and include removed scripts
+* Load merged removed scripts in footer
 
 == Description ==
 
@@ -34,8 +42,7 @@ This is an essential plugin for your WordPress websites:
 * Remove unnecessary jQuery migrate script
 * Compact HTML code
 * Disable Posts Auto Saving
-* Insert Google Analytics code
-* Insert Google Tag Manager ID code
+* Insert google analytics code
 * Remove header WordPress generator meta tag
 * Remove header WLW Manifest meta tag
 * Remove header RSD meta tag
@@ -48,7 +55,11 @@ This is an essential plugin for your WordPress websites:
 * Fix post type pagination
 * Display total number of executed SQL queries
 * Remove any filter you want
+* Remove Trackbacks and Pingbacks from Comment Count
+* Add a Custom Dashboard Logo
 * and more to come ...
+
+Visit: http://araujo.cc/
 
 Contribute on github: [github.com/webarthur/advanced-settings](https://github.com/webarthur/advanced-settings)
 

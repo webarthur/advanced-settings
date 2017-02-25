@@ -38,6 +38,10 @@ This is an essential plugin for your WordPress sites:
 - Fix post type pagination
 - Display total number of executed SQL queries
 - Remove any filter you want
+- Remove *type="text/javascript"* attribute from &lt;script&gt; tag
+- Track and list enqueued scripts
+- Merge and include removed scripts
+- Load merged removed scripts in footer
 and more to come ...
 
 Visit: http://araujo.cc/

@@ -2,22 +2,10 @@
 
 <div class="wrap">
 
-	<?php
-		$external_plugin_name = 'Advanced Settings';
-		$external_plugin_url = ADVSET_URL;
-	?>
-	<div style="float:right;width:400px">
-		<div style="float:right; margin-top:10px">
-			 <iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo urlencode($external_plugin_url) ?>&amp;layout=box_count&amp;show_faces=false&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=21"
-				scrolling="no" frameborder="0" style="overflow:hidden; width:90px; height:61px; margin:0 0 0 10px; float:right" allowTransparency="true"></iframe>
-				<strong style="line-height:25px;">
-					<?php echo __("Do you like <a href=\"{$external_plugin_url}\" target=\"_blank\">{$external_plugin_name}</a> Plugin? "); ?>
-				</strong>
-		</div>
-	</div>
+	<?php advset_powered(); ?>
 
 	<div id="icon-options-general" class="icon32"><br></div>
-	<h2><?php _e('HTML Code'); ?></h2>
+	<h2><?php _e('Advanced Settings &rsaquo; HTML Code'); ?></h2>
 
 	<form action="options.php" method="post">
 
@@ -113,6 +101,17 @@
 			</tr>
 
 			<tr valign="top">
+				<th scope="row"><?php _e('Comments'); ?></th>
+				<td>
+				  <label for="remove_pingbacks_trackbacks_count">
+				    <input name="remove_pingbacks_trackbacks_count" type="checkbox" id="remove_pingbacks_trackbacks_count" value="1" <?php advset_check_if('remove_pingbacks_trackbacks_count') ?> />
+				    <?php _e('Remove Trackbacks and Pingbacks from Comment Count') ?>
+				    </label>
+
+				</td>
+				</tr>
+
+				<tr valign="top">
 				<th scope="row"><?php _e('Author Bio'); ?></th>
 				<td>
 					<label for="author_bio">
@@ -124,23 +123,6 @@
 					<label for="author_bio_html">
 						<input name="author_bio_html" type="checkbox" id="author_bio_html" value="1" <?php advset_check_if('author_bio_html') ?> />
 						<?php _e('Allow HTML in user profile') ?></label>
-
-				</td>
-			</tr>
-
-			<tr valign="top">
-				<th scope="row"><?php _e('Scripts'); ?></th>
-				<td>
-					<label for="jquery_remove_migrate">
-						<input name="jquery_remove_migrate" type="checkbox" id="jquery_remove_migrate" value="1" <?php advset_check_if('jquery_remove_migrate') ?> />
-						<?php _e('Remove unnecessary jQuery migrate script (jquery-migrate.min.js)') ?>
-						</label>
-
-					<br />
-					<label for="jquery_cnd">
-						<input name="jquery_cnd" type="checkbox" id="jquery_cnd" value="1" <?php advset_check_if('jquery_cnd') ?> />
-						<?php _e('Include jQuery Google CDN instead local script (version 1.11.0)') ?>
-						</label>
 
 				</td>
 			</tr>
@@ -170,19 +152,6 @@
 				<td>
 					<label for="analytics">
 						<input name="analytics" type="text" size="12" id="analytics" value="<?php echo advset_option('analytics') ?>" />
-						</label>
-
-				</td>
-			</tr>
-
-			<tr valign="top">
-				<th scope="row">
-					<?php _e('Google Tag Manager ID'); ?> <br />
-					<i style="color:#999"><?php _e('inserts a javascript code immediately after the opening <body> tag') ?></i>
-				</th>
-				<td>
-					<label for="gtag_manager">
-						<input name="gtag_manager" type="text" size="12" id="gtag_manager" value="<?php echo advset_option('gtag_manager') ?>" />
 						</label>
 
 				</td>

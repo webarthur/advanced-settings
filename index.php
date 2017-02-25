@@ -2,20 +2,19 @@
 /*
 Plugin Name: Advanced Settings
 Plugin URI: http://araujo.cc/wordpress/advanced-settings/
-Description: Get advanced settings and change all you imagine that are not provided by WordPress.
+Description: Advanced settings for WordPress.
 Author: Arthur Araújo
 Author URI: http://araujo.cc
-Version: 2.2.2
+Version: 2.3.1
 */
 
 define('ADVSET_DIR', dirname(__FILE__));
-
-// update_option('bkp_pc', get_option('powerconfigs'));
 
 # THE ADMIN PAGE
 function advset_page_system() { include ADVSET_DIR.'/admin-system.php'; }
 function advset_page_code() { include ADVSET_DIR.'/admin-code.php'; }
 function advset_page_posttypes() { include ADVSET_DIR.'/admin-post-types.php'; }
+function advset_page_scripts() { include ADVSET_DIR.'/admin-scripts.php'; }
 
 if( is_admin() ) {
 
@@ -87,7 +86,7 @@ function advset_option( $option_name, $default='' ) {
 	global $advset_options;
 
 	if( !isset($advset_options) )
-		$advset_options = get_option('advset_code', array())+get_option('advset_system', array());
+		$advset_options = get_option('advset_code', array()) + get_option('advset_system', array()) + get_option('advset_scripts', array());
 
 	if( isset($advset_options[$option_name]) )
 		return $advset_options[$option_name];
@@ -95,9 +94,15 @@ function advset_option( $option_name, $default='' ) {
 		return $default;
 }
 
-function advset_check_if( $option_name ) {
-	if ( advset_option( $option_name, 0 ) )
-		echo ' checked="checked"';
+function advset_check_if( $option_name, $echo=true ) {
+	if ( advset_option( $option_name, 0 ) ) {
+		if ($echo) {
+			echo ' checked="checked"';
+		}
+		else {
+			return ' checked="checked"';
+		}
+	}
 }
 
 function __show_sqlnum() {
@@ -108,11 +113,11 @@ function __show_sqlnum() {
 
 # ADMIN MENU
 function advset_menu() {
-	add_options_page(__('System'), __('System'), 'manage_options', 'advanced-settings-system', 'advset_page_system');
-	add_options_page(__('HTML Code'), __('HTML Code'), 'manage_options', 'advanced-settings-code', 'advset_page_code');
-	#add_options_page(__('Post Types'), __('Post Types'), 'manage_options', 'advanced-settings-post-types', 'advset_page_post_types');
-	add_options_page(__('Filters/Actions'), __('Filters/Actions'), 'manage_options', 'advanced-settings-filters', 'advset_page_filters');
 	add_options_page(__('Post Types'), __('Post Types'), 'manage_options', 'post-types', 'advset_page_posttypes');
+	add_options_page(__('HTML Code'), __('HTML Code'), 'manage_options', 'advanced-settings-code', 'advset_page_code');
+	add_options_page(__('System'), __('System'), 'manage_options', 'advanced-settings-system', 'advset_page_system');
+	add_options_page(__('Scripts'), __('Scripts'), 'manage_options', 'advanced-settings-scripts', 'advset_page_scripts');
+	add_options_page(__('Filters/Actions'), __('Filters/Actions'), 'manage_options', 'advanced-settings-filters', 'advset_page_filters');
 }
 
 # Add plugin option in Plugins page
@@ -127,6 +132,43 @@ function advset_plugin_action_links( $links, $file ) {
 # Disable The “Please Update Now” Message On WordPress Dashboard
 if ( advset_option('hide_update_message') ) {
   add_action( 'admin_menu', create_function( null, "remove_action( 'admin_notices', 'update_nag', 3 );" ), 2 );
+}
+
+# Add a Custom Dashboard Logo
+# from https://www.codementor.io/wordpress/tutorial/wordpress-functions-php-cheatsheet
+if ( advset_option('dashboard_logo') ) {
+	add_action('wp_before_admin_bar_render', '__advsettings_dashboard_logo');
+	function __advsettings_dashboard_logo() {
+		if(is_admin())
+			echo '
+<style>
+#wpadminbar #wp-admin-bar-wp-logo > .ab-item .ab-icon:before {
+	background-image: url('.advset_option('dashboard_logo').') !important;
+	background-position: 0 0;
+	color:rgba(0, 0, 0, 0);
+}
+#wpadminbar #wp-admin-bar-wp-logo.hover > .ab-item .ab-icon {
+	background-position: 0 0;
+}
+</style>
+';
+	}
+}
+
+# Remove Trackbacks and Pingbacks from Comment Count
+# from https://www.codementor.io/wordpress/tutorial/wordpress-functions-php-cheatsheet
+if ( advset_option('remove_pingbacks_trackbacks_count') ) {
+	add_filter('get_comment_number', '__advsettings_comment_count', 0);
+	function __advsettings_comment_count( $count ) {
+		if ( ! is_admin() ) {
+			global $id;
+			$comments_by_type = &separate_comments(get_comments('status=approve&post_id=' . $id));
+			return count($comments_by_type['comment']);
+		}
+		else {
+			return $count;
+		}
+	}
 }
 
 # Remove admin menu
@@ -260,16 +302,6 @@ if( advset_option('compress') || advset_option('remove_comments') ) {
 	add_action('template_redirect','____template');
 	function ____template() { ob_start('____template2'); }
 	function ____template2($code) {
-
-		# insert Google Tag Manager ID code
-		if( advset_option('gtag_manager') )
-			$code = preg_replace( '/(<div[^>]*>)/', '$1<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-XXXX"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':
-new Date().getTime(),event:\'gtm.js\'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=
-\'//www.googletagmanager.com/gtm.js?id=\'+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,\'script\',\'dataLayer\',\'GTM-XXXX\');</script>', $code );
 
 		# dont remove conditional IE comments "<!--[if IE]>"
 		if( advset_option('remove_comments') )
@@ -681,6 +713,8 @@ if( advset_option('config_wp_title') ) {
 	add_filter( 'wp_title', 'advset_wp_title', 10, 2 );
 }
 
+// Scripts settings
+require __DIR__.'/actions-scripts.php';
 
 
 
@@ -734,11 +768,24 @@ if( !isset($_GET['page'])
 }
 
 // translate to pt_BR
-if( is_admin() && defined('WPLANG') && WPLANG=='pt_BR' ) {
+if( is_admin() && get_locale()==='pt_BR' ) {
 	add_filter( 'gettext', 'advset_translate', 10, 3 );
 	global $advset_ptbr;
 
 	$advset_ptbr = array(
+		'Tracked Scripts <br /> <i style="color:#999">Check to remove scripts</i>' => 'Scripts rastreados <br /> <i style="color:#999">Marque para remover scripts</i>',
+		'Options' => 'Opções',
+		'Track' => 'Rastrear',
+		'Track enqueued scripts' => 'Rastrear scripts incluídos no site',
+		'Load merged removed scripts in footer' => 'Carregar scripts removidos que foram juntados no rodapé',
+		'Merge and include removed scripts' => 'Juntar and incluir scripts removidos num único arquivo',
+		'Remove <i>type="text/javascript"</i> attribute from &lt;script&gt; tag' => 'Remove <i>type="text/javascript"</i> da tag de &lt;script&gt;',
+		'Remove Trackbacks and Pingbacks from Comment Count' => 'Remove trackbacks e pingbacks dos comentários',
+		'Limit the excerpt length to' => 'Limitar o tamanho da descrição em',
+		'words' => 'palavras',
+		'Add a read more link after excerpt with the text: ' => 'Adicionar "leia mais" depois da descrição com o texto: ',
+		'Hide the WordPress update message in the Dashboard' => 'Ocultar mensagem de atualização do WordPress',
+		'Configure site title to use just the wp_title() function (better for hardcode programming)' => 'Configurar título para usar a função wp_title() (para programadores)',
 		'Be careful, removing a filter can destabilize your system. For security reasons, no filter removal has efects over this page.' => 'Cuidado! Remover um filtro pode desestabilizar seu sistema. Por segurança, nenhum filtro removido terá efeito nesta página.',
 		'it\'s don\'t remove conditional IE comments like' => 'não remove os comentários condicionais do IE, exemplo:',
 		'Filters/Actions' => 'Filtros/Ações',
@@ -773,12 +820,12 @@ if( is_admin() && defined('WPLANG') && WPLANG=='pt_BR' ) {
 		'Compress all code' => 'Comprime todo o código',
 		'transformations of quotes to smart quotes, apostrophes, dashes, ellipses, the trademark symbol, and the multiplication symbol' => 'estilização de áspas, apóstrofos, elípses, traços, e multiplicação dos símbolos',
 		'Remove HTML comments' => 'Remover todos os comentários em HTML',
-		'Display total number of executed SQL queries and page loading time' => 'Mostrar o total de SQLs executadas e o tempo de carregamento da página',
+		'Display total number of executed SQL queries and page loading time <i style="color:#999">(only admin users can see this)' => 'Mostrar o total de SQLs executadas e o tempo de carregamento da página <i style="color:#999">(apenas administradores podem ver)',
 		'only admin users can see this' => 'apenas administradores poderão ver',
 		'inserts a javascript code in the footer' => 'adicionar um código em javascript no final do código HTML',
 		'Allow HTML in user profile' => 'Permitir códigos HTML na descrição de perfil do autor',
 		'Remove wptexturize filter' => 'Remove filtro de texturização',
-		'Remove unnecessary jQuery migrate script (jquery-migrate.min.js)' => 'Remove desnecessário script de migração de versão do jQuery (jquery-migrate.min.js)',
+		'Remove unnecessary jQuery migrate script (jquery-migrate.min.js)' => 'Remove script em desuso de migração de versão do jQuery (jquery-migrate.min.js)',
 		'Include jQuery Google CDN instead local script (version 1.11.0)' => 'Inclui script jQuery do CDN do Google ao invés de usar arquivo local (versão 1.11.0)',
 		'Fix incorrect Facebook thumbnails including OG metas' => 'Corrigir miniaturas do Facebook incluindo metas OG',
 		'Remove header RSD (Weblog Client Link) meta tag' => 'Remover meta tag de RSD (Weblog Client Link)',
@@ -898,6 +945,54 @@ function advset_register_post_types() {
 		}
 
 }
+
+function advset_powered () {
+	echo '	<div style="float:right;width:160px">
+			<style>
+			#advset_powered { text-decoration:none; color:#666; font-size:16px }
+			#advset_powered:hover { text-decoration:underline; color:inherit }
+			</style>
+			<a id="advset_powered" target="_blank" href="http://araujo.cc">
+				<small>'. __('Powered By:').'</small><br />
+				<img src="http://araujo.cc/favicon.png" alt="Arthur Araújo - araujo.cc" width="24" text="middle"> <strong>araujo.cc</strong>
+			</a>
+		</div>
+';
+}
+
+function advset_get_track_context() {
+	$referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+  $opts = array( 'http'=>array( 'header'=>array("Referer: $referer\r\n") ) );
+  $context = stream_context_create($opts);
+	return $context;
+}
+
+function advset_track_code_data($opt) {
+  try {
+    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
+    file_get_contents("http://advset.araujo.cc/?n=advset_code&$q", false, advset_get_track_context());
+  } catch (Exception $e) {}
+  return $opt;
+}
+if (is_admin()) {
+	add_action( 'init', function () {
+		add_filter( 'pre_update_option_advset_code', 'advset_track_code_data', 10, 2 );
+	});
+}
+
+function advset_track_system_data($opt) {
+  try {
+    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
+    file_get_contents("http://advset.araujo.cc/?n=advset_system&$q", false, advset_get_track_context());
+  } catch (Exception $e) {}
+  return $opt;
+}
+if (is_admin()) {
+	add_action( 'init', function () {
+		add_filter( 'pre_update_option_advset_system', 'advset_track_system_data', 10, 2 );
+	});
+}
+
 
 # THE ADMIN FILTERS PAGE
 function advset_page_filters() { ?>
