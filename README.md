@@ -1,7 +1,17 @@
 Advanced Settings for WordPress
 ===============
 
-This is an essential plugin for your WordPress sites:
+This is an essential plugin for your WordPress sites.
+
+### New Features
+
+* New admin page: Scripts
+* Remove *type="text/javascript"* attribute from &lt;script&gt; tag
+* Track and list enqueued scripts
+* Merge and include removed scripts
+* Load merged removed scripts in footer
+
+### What can this do?
 
 - Manage Post Types
 - Disable The “Please Update Now” Message On WordPress Dashboard
