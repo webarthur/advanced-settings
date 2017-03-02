@@ -5,7 +5,7 @@ Plugin URI: http://araujo.cc/wordpress/advanced-settings/
 Description: Advanced settings for WordPress.
 Author: Arthur Araújo
 Author URI: http://araujo.cc
-Version: 2.3.1
+Version: 2.3.2
 */
 
 define('ADVSET_DIR', dirname(__FILE__));
@@ -45,13 +45,8 @@ if( is_admin() ) {
 			// define option name
 			$setup_name = 'advset_'.$_POST['advset_group'];
 
-			// get configuration
-			// $advset_options=get_option($setup_name);
-
 			// prepare option group
 			$_POST[$setup_name] = $_POST;
-
-			/*$_POST[$setup_name] = array_merge( $advset_options, $_POST );*/
 
 			unset(
 				$_POST[$setup_name]['option_page'],
@@ -66,11 +61,6 @@ if( is_admin() ) {
 
 			if( $_POST[$setup_name]['remove_widget_system'] )
 				$_POST[$setup_name]['remove_default_wp_widgets'] = '1';
-
-			// $_POST[$setup_name]['remove_filters'] = advset_option( 'remove_filters' );
-
-			//print_r($_POST[$setup_name]);
-			///die();
 
 			// save settings
 			register_setting( 'advanced-settings', $setup_name );
@@ -316,11 +306,7 @@ if( advset_option('compress') || advset_option('remove_comments') ) {
 		if( advset_option('compress') )
 			$code = trim( preg_replace( '/\s+(?![^<>]*<\/pre>)/', ' ', $code ) );
 
-		/* Acentos */
-		#$code = str_encode( $code );
-
 		return $code;
-
 	}
 }
 
@@ -880,9 +866,6 @@ function advset_register_post_types() {
 
 	$post_types = (array) get_option( 'adv_post_types', array() );
 
-	#print_r($post_types);
-	#die();
-
 	if( is_admin() && current_user_can('manage_options') && isset($_GET['delete_posttype']) ) {
 		unset($post_types[$_GET['delete_posttype']]);
 		update_option( 'adv_post_types', $post_types );
@@ -954,7 +937,7 @@ function advset_powered () {
 			</style>
 			<a id="advset_powered" target="_blank" href="http://araujo.cc">
 				<small>'. __('Powered By:').'</small><br />
-				<img src="http://araujo.cc/favicon.png" alt="Arthur Araújo - araujo.cc" width="24" text="middle"> <strong>araujo.cc</strong>
+				<img src="http://araujo.cc/favicon.png" alt="Arthur Araújo - araujo.cc" width="24" align="absmiddle"> <strong>araujo.cc</strong>
 			</a>
 		</div>
 ';

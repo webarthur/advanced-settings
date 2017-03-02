@@ -9,7 +9,7 @@
 
 	<?php if ($notice = get_option('advset_notice')) { ?>
 		<div class="notice notice-<?php echo $notice['class'] ?> is-dismissible">
-			<p><?php _e( $notice['text'] ); ?></p>
+			<p><b><?php echo $notice['size'] ?> <?php _e( $notice['text'] ); ?></b><?php echo $notice['files'] ?></p>
 		</div>
 	<?php delete_option('advset_notice') ?>
 	<?php } ?>

@@ -103,15 +103,15 @@
 			<tr valign="top">
 				<th scope="row"><?php _e('Comments'); ?></th>
 				<td>
-				  <label for="remove_pingbacks_trackbacks_count">
-				    <input name="remove_pingbacks_trackbacks_count" type="checkbox" id="remove_pingbacks_trackbacks_count" value="1" <?php advset_check_if('remove_pingbacks_trackbacks_count') ?> />
-				    <?php _e('Remove Trackbacks and Pingbacks from Comment Count') ?>
-				    </label>
+					<label for="remove_pingbacks_trackbacks_count">
+						<input name="remove_pingbacks_trackbacks_count" type="checkbox" id="remove_pingbacks_trackbacks_count" value="1" <?php advset_check_if('remove_pingbacks_trackbacks_count') ?> />
+						<?php _e('Remove Trackbacks and Pingbacks from Comment Count') ?>
+						</label>
 
 				</td>
-				</tr>
+			</tr>
 
-				<tr valign="top">
+			<tr valign="top">
 				<th scope="row"><?php _e('Author Bio'); ?></th>
 				<td>
 					<label for="author_bio">
