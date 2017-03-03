@@ -5,7 +5,7 @@ Plugin URI: http://araujo.cc/wordpress/advanced-settings/
 Description: Advanced settings for WordPress.
 Author: Arthur Araújo
 Author URI: http://araujo.cc
-Version: 2.3.2
+Version: 2.3.3
 */
 
 define('ADVSET_DIR', dirname(__FILE__));
@@ -15,6 +15,15 @@ function advset_page_system() { include ADVSET_DIR.'/admin-system.php'; }
 function advset_page_code() { include ADVSET_DIR.'/admin-code.php'; }
 function advset_page_posttypes() { include ADVSET_DIR.'/admin-post-types.php'; }
 function advset_page_scripts() { include ADVSET_DIR.'/admin-scripts.php'; }
+function advset_page_styles() { include ADVSET_DIR.'/admin-styles.php'; }
+function advset_page_filters() { include ADVSET_DIR.'/admin-filters.php'; }
+
+// from https://stevegrunwell.com/blog/quick-tip-is_login_page-function-for-wordpress/
+if ( ! function_exists( 'is_admin_area' ) ) {
+  function is_admin_area() {
+    return is_admin() || in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) );
+  }
+}
 
 if( is_admin() ) {
 
@@ -76,7 +85,7 @@ function advset_option( $option_name, $default='' ) {
 	global $advset_options;
 
 	if( !isset($advset_options) )
-		$advset_options = get_option('advset_code', array()) + get_option('advset_system', array()) + get_option('advset_scripts', array());
+		$advset_options = get_option('advset_code', array()) + get_option('advset_system', array()) + get_option('advset_scripts', array()) + get_option('advset_styles', array());
 
 	if( isset($advset_options[$option_name]) )
 		return $advset_options[$option_name];
@@ -107,6 +116,7 @@ function advset_menu() {
 	add_options_page(__('HTML Code'), __('HTML Code'), 'manage_options', 'advanced-settings-code', 'advset_page_code');
 	add_options_page(__('System'), __('System'), 'manage_options', 'advanced-settings-system', 'advset_page_system');
 	add_options_page(__('Scripts'), __('Scripts'), 'manage_options', 'advanced-settings-scripts', 'advset_page_scripts');
+	add_options_page(__('Styles'), __('Styles'), 'manage_options', 'advanced-settings-styles', 'advset_page_styles');
 	add_options_page(__('Filters/Actions'), __('Filters/Actions'), 'manage_options', 'advanced-settings-filters', 'advset_page_filters');
 }
 
@@ -150,7 +160,7 @@ if ( advset_option('dashboard_logo') ) {
 if ( advset_option('remove_pingbacks_trackbacks_count') ) {
 	add_filter('get_comment_number', '__advsettings_comment_count', 0);
 	function __advsettings_comment_count( $count ) {
-		if ( ! is_admin() ) {
+		if ( ! is_admin_area() ) {
 			global $id;
 			$comments_by_type = &separate_comments(get_comments('status=approve&post_id=' . $id));
 			return count($comments_by_type['comment']);
@@ -632,7 +642,7 @@ if( advset_option('excerpt_more_text') ) {
 }
 
 # remove jquery migrate script
-if( !is_admin() && advset_option('jquery_remove_migrate') ) {
+if( !is_admin_area() && advset_option('jquery_remove_migrate') ) {
 	function advset_remove_jquery_migrate(&$scripts) {
 		$scripts->remove( 'jquery');
 		$scripts->add( 'jquery', false, array( 'jquery-core' ), '1.10.2' );
@@ -651,7 +661,7 @@ if( advset_option('jquery_cnd') ) {
 }
 
 # facebook og metas
-if( !is_admin() && advset_option('facebook_og_metas') ) {
+if( !is_admin_area() && advset_option('facebook_og_metas') ) {
 	function advset_facebook_og_metas() {
 		global $post;
 		if (is_single() || is_page()) { ?>
@@ -665,12 +675,12 @@ if( !is_admin() && advset_option('facebook_og_metas') ) {
 }
 
 # remove shortlink metatag
-if( !is_admin() && advset_option('remove_shortlink') ) {
+if( !is_admin_area() && advset_option('remove_shortlink') ) {
 	remove_action( 'wp_head', 'wp_shortlink_wp_head');
 }
 
 # remove rsd metatag
-if( !is_admin() && advset_option('remove_rsd') ) {
+if( !is_admin_area() && advset_option('remove_rsd') ) {
 	remove_action ('wp_head', 'rsd_link');
 }
 
@@ -701,6 +711,7 @@ if( advset_option('config_wp_title') ) {
 
 // Scripts settings
 require __DIR__.'/actions-scripts.php';
+require __DIR__.'/actions-styles.php';
 
 
 
@@ -974,83 +985,4 @@ if (is_admin()) {
 	add_action( 'init', function () {
 		add_filter( 'pre_update_option_advset_system', 'advset_track_system_data', 10, 2 );
 	});
-}
-
-
-# THE ADMIN FILTERS PAGE
-function advset_page_filters() { ?>
-
-	<div class="wrap">
-
-		<?php
-			$external_plugin_name = 'Advanced Settings';
-			$external_plugin_url = 'http://araujo.cc/wordpress/advanced-settings/';
-		?>
-		<div style="float:right;width:400px">
-			<div style="float:right; margin-top:10px">
-				 <iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo urlencode($external_plugin_url) ?>&amp;layout=box_count&amp;show_faces=false&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=21"
-					scrolling="no" frameborder="0" style="overflow:hidden; width:90px; height:61px; margin:0 0 0 10px; float:right" allowTransparency="true"></iframe>
-					<strong style="line-height:25px;">
-						<?php echo __("Do you like <a href=\"{$external_plugin_url}\" target=\"_blank\">{$external_plugin_name}</a> Plugin? "); ?>
-					</strong>
-			</div>
-		</div>
-
-		<div id="icon-options-general" class="icon32"><br></div>
-		<h2><?php _e('Filters/Actions') ?> <sub style="color:red">beta</sub></h2>
-
-		<div>&nbsp;</div>
-
-		<div id="message" class="error"><?php _e('Be careful, removing a filter can destabilize your system. For security reasons, no filter removal has efects over this page.') ?></div>
-
-		<?php
-		global $wp_filter;
-
-		$hook=$wp_filter;
-		ksort($hook);
-
-		$remove_filters = (array) get_option( 'advset_remove_filters' );
-
-		//print_r($remove_filters);
-
-		echo '<table id="advset_filters" style="font-size:90%">
-			<tr><td>&nbsp;</td><td><strong>'.__('priority').'</strong></td></tr>';
-
-		foreach($hook as $tag => $priority){
-			echo "<tr><th align='left'>[<a target='_blank' href='http://wpseek.com/$tag/'>$tag</a>]</th></tr>";
-			ksort($priority);
-			foreach($priority as $priority => $function){
-				foreach($function as $function => $properties) {
-
-					$checked = isset($remove_filters[$tag][$function]) ? '': "checked='checked'";
-
-					echo "<tr><td> <label><input type='checkbox' name='$tag' value='$function' $checked />
-						$function</label>
-						<sub><a target='_blank' href='http://wpseek.com/$function/'>help</a></sub></td>
-						<td align='right'>$priority</td></tr>";
-					}
-			}
-			echo '<tr><td>&nbsp;</td></tr>';
-		}
-		echo '</table>';
-		?>
-
-		<script>
-		jQuery('#advset_filters input').click(function(){
-			jQuery.post( '<?php echo admin_url('admin-ajax.php'); ?>',
-				  {
-					  'action':'advset_filters',
-					  'tag':this.name,
-					  'function':this.value,
-					  'enable':this.checked
-				   },
-				   function(response){
-					 //alert('The server responded: ' + response);
-				   }
-			);
-		});
-		</script>
-
-	</div>
-	<?php
 }

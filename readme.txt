@@ -2,10 +2,10 @@
 Contributors: webarthur
 Author URI: http://araujo.cc/
 Plugin URI: http://araujo.cc/portfolio/advanced-settings.html
-Tags: settings, hacks, option, admin, menu, page, image, setting, images, google, analytics, compress, html, thumbnail, post type, auto save, seo, keywords, favicon, feedburner, compact, comments, remove comments, hide comments, author, resize at upload, auto post thumbnails, filters, widget, postype
+Tags: settings, performance, speed, admin, post type, menu, page, image, setting, images, google, analytics, compress, html, thumbnail, auto save, seo, keywords, favicon, feedburner, compact, comments, remove comments, hide comments, author, resize at upload, auto post thumbnails, filters, widget, option
 Requires at least: 3.0
 Tested up to: 4.7.2
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 License: GPLv2 or later
 Get advanced settings and change all you imagine that are not provided by WordPress.
 
@@ -16,56 +16,81 @@ This is an essential plugin for your WordPress websites.
 = New Features =
 
 * New admin page: Scripts
+* New admin page: Styles
 * Remove *type="text/javascript"* attribute from &lt;script&gt; tag
-* Track and list enqueued scripts
+* Track and list enqueued scripts/styles
+* Merge and include removed scripts/styles
+* Load merged removed scripts in footer
+* Load merged removed styles
+
+= Post types =
+
+* Manage/create/edit
+* Add supports: title, editor, author, thumbnail, excerpt, trackbacks, custom fields, comments, revisions, page attributes, etc.
+* Configure: hierarchical, has_archive, query_var, show_in_menu, show_ui, publicly_queryable, public, etc.
+* Taxonomies: category, post_tag
+
+= HTML Code =
+
+* Fix incorrect Facebook thumbnails including OG metas
+* Hide top admin menu
+* Automatically add a FavIcon (whenever there is a favicon.ico or favicon.png file in the template folder)
+* Add a description meta tag using the blog description (SEO)
+* Add description and keywords meta tags in each posts (SEO)
+* Remove header WordPress generator meta tag
+* Remove header WLW Manifest meta tag (Windows Live Writer link)
+* Remove header RSD (Weblog Client Link) meta tag
+* Remove header shortlink meta tag
+* Configure site title to use just the wp_title() function (better for hardcode programming)
+*	Limit the excerpt length
+* Add a read more link after excerpt
+* Remove wptexturize filter
+* Remove Trackbacks and Pingbacks from Comment Count
+* Insert author bio in each post
+* Allow HTML in user profile
+* Compress all HTML code
+* Remove HTML comments (it's don't remove conditional IE comments like: <!--[if IE]>)
+* Add Google Analytics code
+* Add FeedBurner code
+
+= System =
+
+* Hide the WordPress update message in the Dashboard
+* Add dashboard logo
+* Unregister default WordPress widgets
+* Disable widget system
+* Disable comment system
+* Disable Posts Auto Saving
+* Automatically generate the Post Thumbnail (from the first image in post)
+* Set JPEG quality
+* Resize image at upload to max size
+* Display total number of executed SQL queries and page loading time
+* Fix post type pagination
+
+= Scripts =
+
+* Remove unnecessary jQuery migrate script (jquery-migrate.min.js)
+* Include jQuery Google CDN instead local script (version 1.11.0)
+* Remove type="text/javascript" attribute from <script> tag
+* Track enqueued scripts
 * Merge and include removed scripts
 * Load merged removed scripts in footer
 
-= What can this do? =
+= Styles =
 
-* Manage Post Types
-* Disable The “Please Update Now” Message On WordPress Dashboard
-* Fix incorrect Facebook thumbnails including OG metas
-* Unregister default WordPress widgets
-* Remove widget system
-* Remove a specific system action or filter
-* Resize image at upload
-* Automatically generate the Post Thumbnail
-* Remove comments system
-* Insert author bio on each post
-* Allow HTML in user profiles
-* Add description and keywords meta tags in posts (SEO)
-* Get the blog description and add a description meta tag
-* Automatically add a FavIcon
-* Hide top WP admin bar
-* Remove HTML comments
-* Easy FeedBurner configuration
-* Include jQuery Google CDN
-* Remove unnecessary jQuery migrate script
-* Compact HTML code
-* Disable Posts Auto Saving
-* Insert google analytics code
-* Remove header WordPress generator meta tag
-* Remove header WLW Manifest meta tag
-* Remove header RSD meta tag
-* Remove header Shortlink meta tag
-* Display total number of executed SQL queries
-* Display page loading time
-* Remove "texturize" (remove wptexturize filters)
-* Add thumbnail support
-* Set JPEG quality
-* Fix post type pagination
-* Display total number of executed SQL queries
-* Remove any filter you want
-* Remove Trackbacks and Pingbacks from Comment Count
-* Add a Custom Dashboard Logo
-* and more to come ...
+* Track enqueued styles
+* Merge and include removed styles
+
+= Filters/Hooks =
+
+* Disable wp filters/hooks
 
 Visit: http://araujo.cc/
 
 Contribute on github: [github.com/webarthur/advanced-settings](https://github.com/webarthur/advanced-settings)
 
 "Simplicity is the ultimate sophistication" -- Da Vinci
+
 
 == Installation ==
 
@@ -80,6 +105,17 @@ Upload plugin to your blog, activate it, then click on a setting options in admi
 
 
 == Changelog ==
+
+= 2.3.3 =
+* Add styles admin page
+* Filters admin page fix
+* New description
+
+= 2.3.2 =
+* Fixes for script actions & hooks
+
+= 2.3.1 =
+* Add scripts admin page
 
 = 2.2.1 =
 * Fix delete posttype bug
