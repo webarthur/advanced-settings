@@ -148,21 +148,3 @@ if (is_admin()) {
 		add_filter( 'pre_update_option_advset_scripts', 'track_merge_removed_scripts_filter', 10, 2 );
 	});
 }
-
-function advset_track_scripts_data($opt) {
-  try {
-    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.ronconi.dev/?n=advset_scripts&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  try {
-    $data = get_option('advset_tracked_scripts', []);
-    $q = function_exists('json_encode')? 'j='.json_encode($data) : 's='.serialize($data);
-    file_get_contents("http://advset.ronconi.dev/?n=advset_tracked_scripts&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  return $opt;
-}
-if (is_admin()) {
-	add_action( 'init', function () {
-		add_filter( 'pre_update_option_advset_scripts', 'advset_track_scripts_data', 10, 2 );
-	});
-}

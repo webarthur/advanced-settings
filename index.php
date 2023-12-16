@@ -948,41 +948,9 @@ function advset_powered () {
 			</style>
 			<a id="advset_powered" target="_blank" href="https://ronconi.dev">
 				<small>'. __('Powered By:').'</small><br />
-				<img src="https://ronconi.dev/favicon.png" alt="Arthur Ronconi - ronconi.dev" width="24" align="absmiddle"> <strong>ronconi.dev</strong>
+				<strong>ronconi.dev</strong>
 			</a>
 		</div>
 ';
 }
 
-function advset_get_track_context() {
-	$referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-  $opts = array( 'http'=>array( 'header'=>array("Referer: $referer\r\n") ) );
-  $context = stream_context_create($opts);
-	return $context;
-}
-
-function advset_track_code_data($opt) {
-  try {
-    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.ronconi.dev/?n=advset_code&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  return $opt;
-}
-if (is_admin()) {
-	add_action( 'init', function () {
-		add_filter( 'pre_update_option_advset_code', 'advset_track_code_data', 10, 2 );
-	});
-}
-
-function advset_track_system_data($opt) {
-  try {
-    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.ronconi.dev/?n=advset_system&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  return $opt;
-}
-if (is_admin()) {
-	add_action( 'init', function () {
-		add_filter( 'pre_update_option_advset_system', 'advset_track_system_data', 10, 2 );
-	});
-}
