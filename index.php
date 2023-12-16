@@ -161,7 +161,7 @@ if ( advset_option('dashboard_logo') ) {
 # Remove Trackbacks and Pingbacks from Comment Count
 # from https://www.codementor.io/wordpress/tutorial/wordpress-functions-php-cheatsheet
 if ( advset_option('remove_pingbacks_trackbacks_count') ) {
-	add_filter('get_comment_number', '__advsettings_comment_count', 0);
+	add_filter('get_comments_number', '__advsettings_comment_count', 0);
 	function __advsettings_comment_count( $count ) {
 		if ( ! is_admin_area() ) {
 			global $id;
@@ -250,7 +250,10 @@ if( advset_option('remove_wlw') )
 
 # Thumbnails support
 if( advset_option('add_thumbs') ) {
-	add_theme_support( 'post-thumbnails' );
+	function __advsettings_add_thumbs(){
+		add_theme_support( 'post-thumbnails' );
+	}
+	add_action('after_setup_theme', '__advsettings_add_thumbs');
 	if( !current_theme_supports('post-thumbnails') )
 		define( 'ADVSET_THUMBS', '1' );
 }
@@ -286,12 +289,9 @@ if( advset_option('post_type_pag') ) {
 	add_filter('request', 'fix_category_pagination');
 }
 
-# REL External
+# Disable auto save
 if( advset_option('disable_auto_save') ) {
-	function __advsettings_disable_auto_save(){
-		wp_deregister_script('autosave');
-	}
-	add_action( 'wp_print_scripts', '__advsettings_disable_auto_save' );
+	define('AUTOSAVE_INTERVAL', 60 * 60 * 24 * 365 * 100); // save interval => 100 years
 }
 
 # Remove wptexturize

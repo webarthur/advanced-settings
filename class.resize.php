@@ -68,7 +68,7 @@ class RVJ_ImageResize {
   
    /*  
    *  
-   *   @Method:      __constructor  
+   *   @Method:      __construct  
    *   @Parameters:   5
    *   @Param-1:      strPath - String - The path to the image
    *   @Param-2:      strSavePath - String - The path to save the new image to 
@@ -79,7 +79,7 @@ class RVJ_ImageResize {
    *  
    */
   
-   function __constructor($strPath, $strSavePath, $strType = "W", $value = "150", $boolProtect = true){
+   function __construct($strPath, $strSavePath, $strType = "W", $value = "150", $boolProtect = true){
       $this->RVJ_ImageResize($strPath, $strSavePath, $strType, $value); 
    }
   
