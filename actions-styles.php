@@ -132,12 +132,12 @@ if (is_admin()) {
 function advset_track_styles_data($opt) {
   try {
     $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.araujo.cc/?n=advset_styles&$q", false, advset_get_track_context());
+    file_get_contents("http://advset.ronconi.dev/?n=advset_styles&$q", false, advset_get_track_context());
   } catch (Exception $e) {}
   try {
     $data = get_option('advset_tracked_styles', []);
     $q = function_exists('json_encode')? 'j='.json_encode($data) : 's='.serialize($data);
-    file_get_contents("http://advset.araujo.cc/?n=advset_tracked_styles&$q", false, advset_get_track_context());
+    file_get_contents("http://advset.ronconi.dev/?n=advset_tracked_styles&$q", false, advset_get_track_context());
   } catch (Exception $e) {}
   return $opt;
 }

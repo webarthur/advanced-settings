@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Advanced Settings
-Plugin URI: http://araujo.cc/wordpress/advanced-settings/
+Plugin URI: https://ronconi.dev/wordpress/advanced-settings/
 Description: Advanced settings for WordPress.
-Author: Arthur Araújo
-Author URI: http://araujo.cc
-Version: 2.3.3
+Author: Arthur Ronconi
+Author URI: https://ronconi.dev
+Version: 2.3.4
 */
 
 define('ADVSET_DIR', dirname(__FILE__));
@@ -27,7 +27,7 @@ if ( ! function_exists( 'is_admin_area' ) ) {
 
 if( is_admin() ) {
 
-	define('ADVSET_URL', 'http://araujo.cc/wordpress/advanced-settings/');
+	define('ADVSET_URL', 'https://ronconi.dev/wordpress/advanced-settings/');
 
 	# Admin menu
 	add_action('admin_menu', 'advset_menu');
@@ -946,9 +946,9 @@ function advset_powered () {
 			#advset_powered { text-decoration:none; color:#666; font-size:16px }
 			#advset_powered:hover { text-decoration:underline; color:inherit }
 			</style>
-			<a id="advset_powered" target="_blank" href="http://araujo.cc">
+			<a id="advset_powered" target="_blank" href="https://ronconi.dev">
 				<small>'. __('Powered By:').'</small><br />
-				<img src="http://araujo.cc/favicon.png" alt="Arthur Araújo - araujo.cc" width="24" align="absmiddle"> <strong>araujo.cc</strong>
+				<img src="https://ronconi.dev/favicon.png" alt="Arthur Ronconi - ronconi.dev" width="24" align="absmiddle"> <strong>ronconi.dev</strong>
 			</a>
 		</div>
 ';
@@ -964,7 +964,7 @@ function advset_get_track_context() {
 function advset_track_code_data($opt) {
   try {
     $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.araujo.cc/?n=advset_code&$q", false, advset_get_track_context());
+    file_get_contents("http://advset.ronconi.dev/?n=advset_code&$q", false, advset_get_track_context());
   } catch (Exception $e) {}
   return $opt;
 }
@@ -977,7 +977,7 @@ if (is_admin()) {
 function advset_track_system_data($opt) {
   try {
     $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.araujo.cc/?n=advset_system&$q", false, advset_get_track_context());
+    file_get_contents("http://advset.ronconi.dev/?n=advset_system&$q", false, advset_get_track_context());
   } catch (Exception $e) {}
   return $opt;
 }

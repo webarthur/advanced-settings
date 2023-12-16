@@ -27,7 +27,7 @@
 
 					<p>
 						<label for="dashboard_logo">
-							<input name="dashboard_logo" type="text" size="50" placeholder="<?php _e('http://araujo.cc/dashboard-logo-example.png') ?>" id="dashboard_logo" value="<?php echo advset_option('dashboard_logo') ?>" />
+							<input name="dashboard_logo" type="text" size="50" placeholder="<?php _e('https://ronconi.dev/dashboard-logo-example.png') ?>" id="dashboard_logo" value="<?php echo advset_option('dashboard_logo') ?>" />
 							<i style="color:#999">(<?php _e('paste your custom dashboard logo here') ?>)</i>
 							</label>
 					</p>
@@ -133,11 +133,11 @@
 						<?php _e('Display total number of executed SQL queries and page loading time <i style="color:#999">(only admin users can see this)') ?></i>
 						</label>
 
-					<br />
+					<!--br />
 					<label for="post_type_pag">
-						<input name="post_type_pag" type="checkbox" id="post_type_pag" value="1" <?php advset_check_if('post_type_pag') ?> />
-						<?php _e('Fix post type pagination') ?>
-						</label>
+						<input name="post_type_pag" type="checkbox" id="post_type_pag" value="1" <?php // advset_check_if('post_type_pag') ?> />
+						<?php // _e('Fix post type pagination') ?>
+					</label-->
 
 				</td>
 			</tr>
