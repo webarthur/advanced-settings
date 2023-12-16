@@ -1,7 +1,7 @@
 === Advanced Settings ===
 Plugin Name: Advanced Settings
 Author: webarthur
-Contributors: webarthur
+Contributors: webarthur, eHtmlu
 Author URI: https://devarthur.com/
 Plugin URI: https://wordpress.org/plugins/advanced-settings/
 Tags: settings, performance, speed, admin, post type, menu, page, image, setting, images, google, analytics, compress, html, thumbnail, auto save, seo, keywords, favicon, feedburner, compact, comments, remove comments, hide comments, author, resize at upload, auto post thumbnails, filters, widget, option
