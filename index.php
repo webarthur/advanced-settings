@@ -260,8 +260,10 @@ if( advset_option('add_thumbs') ) {
 
 # JPEG Quality
 if( advset_option('jpeg_quality', 0)>0 && $_SERVER['HTTP_HOST']!='localhost' ) {
-	add_filter('jpeg_quality', '____jpeg_quality');
-	function ____jpeg_quality(){ return (int) advset_option('jpeg_quality'); }
+	add_filter('jpeg_quality', '__advsettings_jpeg_quality');
+	function __advsettings_jpeg_quality(){
+		return (int) advset_option('jpeg_quality');
+	}
 }
 
 # REL External
