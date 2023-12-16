@@ -5,7 +5,9 @@ Plugin URI: https://wordpress.org/plugins/advanced-settings/
 Description: Advanced settings for WordPress.
 Author: Arthur Ronconi
 Author URI: https://devarthur.com/
-Version: 2.3.4
+Version: 2.4.0
+Requires at least: 5.0.0
+Requires PHP: 5.3
 */
 
 define('ADVSET_DIR', dirname(__FILE__));

@@ -5,9 +5,9 @@ Contributors: webarthur, eHtmlu
 Author URI: https://devarthur.com/
 Plugin URI: https://wordpress.org/plugins/advanced-settings/
 Tags: settings, performance, speed, admin, post type, menu, page, image, setting, images, google, analytics, compress, html, thumbnail, auto save, seo, keywords, favicon, feedburner, compact, comments, remove comments, hide comments, author, resize at upload, auto post thumbnails, filters, widget, option
-Requires at least: 3.0
-Tested up to: 5.5.3
-Stable tag: 2.3.4
+Requires at least: 5.0.0
+Tested up to: 6.4.2
+Stable tag: 2.4.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
