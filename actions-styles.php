@@ -7,8 +7,8 @@ if( !is_admin_area() ):
 	if (advset_option('track_enqueued_styles')) {
 		add_filter( 'print_styles_array', function($styles) {
 			$wp_styles = wp_styles();
-			$tracked = get_option('advset_tracked_styles') OR array();
-			$queue = $wp_styles->to_do OR array();
+			$tracked = get_option('advset_tracked_styles', array());
+			$queue = empty($wp_styles->to_do) ? array() : $wp_styles->to_do;
 
 			if ($queue) {
 				foreach ($queue as $handle) {

@@ -30,8 +30,8 @@ if( !is_admin_area() ) :
 		add_filter( 'print_scripts_array', function($scripts) {
 			global $advset_removed_scripts;
 			$wp_scripts = wp_scripts();
-			$tracked = get_option('advset_tracked_scripts') OR array();
-			$queue = $wp_scripts->to_do OR array();
+			$tracked = get_option('advset_tracked_scripts', array());
+			$queue = empty($wp_scripts->to_do) ? array() : $wp_scripts->to_do;
 
 			// track scripts
 			if ($queue) {
