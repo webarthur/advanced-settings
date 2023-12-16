@@ -477,28 +477,25 @@ if( advset_option('auto_thumbs') ) {
 	// based on "auto posts plugin" 3.3.2
 
 	// check post status
-	function advset_check_post_status( $new_status='' ) {
-		global $post_ID;
-
-		if ('publish' == $new_status)
-			advset_publish_post($post_ID);
+	function advset_check_post_status( $new_status, $old_status, $post ) {
+		if ('publish' == $new_status) {
+			advset_publish_post($post);
+		}
 	}
 
 	//
-	function advset_publish_post( $post_id ) {
+	function advset_publish_post( $post ) {
 		global $wpdb;
 
 		// First check whether Post Thumbnail is already set for this post.
-		if (get_post_meta($post_id, '_thumbnail_id', true) || get_post_meta($post_id, 'skip_post_thumb', true))
+		if (get_post_meta($post->ID, '_thumbnail_id', true) || get_post_meta($post->ID, 'skip_post_thumb', true))
 			return;
-
-		$post = $wpdb->get_results("SELECT * FROM {$wpdb->posts} WHERE id = $post_id");
 
 		// Initialize variable used to store list of matched images as per provided regular expression
 		$matches = array();
 
 		// Get all images from post's body
-		preg_match_all('/<\s*img [^\>]*src\s*=\s*[\""\']?([^\""\'>]*)/i', $post[0]->post_content, $matches);
+		preg_match_all('/<\s*img [^\>]*src\s*=\s*[\""\']?([^\""\'>]*)[^\>]*/i', empty($post->post_content) ? '' : $post->post_content, $matches);
 
 		if (count($matches)) {
 			foreach ($matches[0] as $key => $image) {
@@ -507,23 +504,23 @@ if( advset_option('auto_thumbs') ) {
 				 * Look for this id in the IMG tag.
 				 */
 				preg_match('/wp-image-([\d]*)/i', $image, $thumb_id);
-				$thumb_id = $thumb_id[1];
+				$thumb_id = empty($thumb_id[1]) ? null : $thumb_id[1];
 
 				// If thumb id is not found, try to look for the image in DB. Thanks to "Erwin Vrolijk" for providing this code.
 				if (!$thumb_id) {
-					$image = substr($image, strpos($image, '"')+1);
-					$result = $wpdb->get_results("SELECT ID FROM {$wpdb->posts} WHERE guid = '".$image."'");
-					$thumb_id = $result[0]->ID;
+					$image = $matches[1][$key];
+					$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE guid = %s", $image));
+					$thumb_id = empty($result[0]->ID) ? null : $result[0]->ID;
 				}
 
 				// Ok. Still no id found. Some other way used to insert the image in post. Now we must fetch the image from URL and do the needful.
 				if (!$thumb_id) {
-					$thumb_id = advset_generate_post_thumbnail($matches, $key, $post[0]->post_content, $post_id);
+					$thumb_id = advset_generate_post_thumbnail($matches, $key, $post);
 				}
 
 				// If we succeed in generating thumg, let's update post meta
 				if ($thumb_id) {
-					update_post_meta( $post_id, '_thumbnail_id', $thumb_id );
+					update_post_meta( $post->ID, '_thumbnail_id', $thumb_id );
 					break;
 				}
 			}
@@ -531,13 +528,13 @@ if( advset_option('auto_thumbs') ) {
 	}
 
 
-	function advset_generate_post_thumbnail( $matches, $key, $post_content, $post_id ) {
+	function advset_generate_post_thumbnail( $matches, $key, $post ) {
 		// Make sure to assign correct title to the image. Extract it from img tag
 		$imageTitle = '';
-		preg_match_all('/<\s*img [^\>]*title\s*=\s*[\""\']?([^\""\'>]*)/i', $post_content, $matchesTitle);
+		preg_match_all('/<\s*img [^\>]*title\s*=\s*[\""\']?([^\""\'>]*)/i', empty($post->post_content) ? '' : $post->post_content, $matchesTitle);
 
 		if (count($matchesTitle) && isset($matchesTitle[1])) {
-			$imageTitle = $matchesTitle[1][$key];
+			$imageTitle = empty($matchesTitle[1][$key]) ? '' : $matchesTitle[1][$key];
 		}
 
 		// Get the URL now for further processing
@@ -572,7 +569,7 @@ if( advset_option('auto_thumbs') ) {
 		@ chmod( $new_file, $perms );
 
 		// Get the file type. Must to use it as a post thumbnail.
-		$wp_filetype = wp_check_filetype( $filename, $mimes );
+		$wp_filetype = wp_check_filetype( $filename );
 
 		extract( $wp_filetype );
 
@@ -593,7 +590,7 @@ if( advset_option('auto_thumbs') ) {
 			'post_content' => '',
 		);
 
-		$thumb_id = wp_insert_attachment($attachment, $file, $post_id);
+		$thumb_id = wp_insert_attachment($attachment, false, $post->ID);
 		if ( !is_wp_error($thumb_id) ) {
 			require_once(ABSPATH . '/wp-admin/includes/image.php');
 
@@ -607,7 +604,7 @@ if( advset_option('auto_thumbs') ) {
 		return null;
    	}
 
-	add_action('transition_post_status', 'advset_check_post_status');
+	add_action('transition_post_status', 'advset_check_post_status', 10, 3);
 
 	if( !function_exists('curl_get_file_contents') ) {
 
