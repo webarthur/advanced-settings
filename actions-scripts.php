@@ -79,13 +79,15 @@ if( !is_admin_area() ) :
 
 	// enqueue merged removed scripts file
 	if( advset_option('track_merge_removed_scripts') ) {
-		$file = WP_CONTENT_DIR.'/advset-merged-scripts.js';
-		if (file_exists($file)) {
-			$ver = filemtime($file);
-			$deps = array();
-			$in_footer = (bool) advset_option('track_merged_scripts_footer');
-			wp_enqueue_script('advset-merged-scripts', WP_CONTENT_URL.'/advset-merged-scripts.js?'.$ver, $deps, $ver, $in_footer);
-		}
+		add_action('wp_enqueue_scripts', function() {
+			$file = WP_CONTENT_DIR.'/advset-merged-scripts.js';
+			if (file_exists($file)) {
+				$ver = filemtime($file);
+				$deps = array();
+				$in_footer = (bool) advset_option('track_merged_scripts_footer');
+				wp_enqueue_script('advset-merged-scripts', WP_CONTENT_URL.'/advset-merged-scripts.js?'.$ver, $deps, $ver, $in_footer);
+			}
+		});
 	}
 
 endif;
@@ -94,7 +96,7 @@ endif;
 // scripts admin page save filter
 function track_merge_removed_scripts_filter($opt) {
 
-	if ($opt['track_merge_removed_scripts']) {
+	if (!empty($opt['track_merge_removed_scripts'])) {
 		$merge = array();
 		$merged_list = '';
 		$tracked = get_option('advset_tracked_scripts');
@@ -109,6 +111,7 @@ function track_merge_removed_scripts_filter($opt) {
 			if ($merge) {
 
 				$file = WP_CONTENT_DIR.'/advset-merged-scripts.js';
+				$url = WP_CONTENT_URL.'/advset-merged-scripts.js';
 
 				file_put_contents($file, '/* Advanced Sttings WP Plugin - Merged scripts  */'."\n\n");
 

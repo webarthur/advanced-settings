@@ -45,9 +45,9 @@ if( !is_admin_area() ):
 	if( advset_option('track_merge_removed_styles') ) {
 		$file = WP_CONTENT_DIR.'/advset-merged-styles.css';
 		if (file_exists($file)) {
-			$deps = array();
-			$in_footer = false;
 			add_action('wp_loaded', function() {
+				$deps = array();
+				$in_footer = false;
 				$ver = filemtime(WP_CONTENT_DIR.'/advset-merged-styles.css');
 				wp_enqueue_style('advset-merged-styles', WP_CONTENT_URL.'/advset-merged-styles.css?'.$ver, $deps, $ver, $in_footer);
 			});
@@ -62,7 +62,7 @@ function track_merge_removed_styles_filter($opt) {
 	// print_r($opt);
 	// die;
 
-	if ($opt['track_merge_removed_styles']) {
+	if (!empty($opt['track_merge_removed_styles'])) {
 		$merge = array();
 		$merged_list = '';
 		$tracked = get_option('advset_tracked_styles');

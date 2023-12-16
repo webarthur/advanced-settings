@@ -65,10 +65,10 @@ if( is_admin() ) {
 				$_POST[$setup_name]['submit']
 			);
 
-			if( $_POST[$setup_name]['auto_thumbs'] )
+			if( !empty($_POST[$setup_name]['auto_thumbs']) )
 				$_POST[$setup_name]['add_thumbs'] = '1';
 
-			if( $_POST[$setup_name]['remove_widget_system'] )
+			if( !empty($_POST[$setup_name]['remove_widget_system']) )
 				$_POST[$setup_name]['remove_default_wp_widgets'] = '1';
 
 			// save settings
@@ -131,7 +131,10 @@ function advset_plugin_action_links( $links, $file ) {
 
 # Disable The “Please Update Now” Message On WordPress Dashboard
 if ( advset_option('hide_update_message') ) {
-  add_action( 'admin_menu', create_function( null, "remove_action( 'admin_notices', 'update_nag', 3 );" ), 2 );
+	add_action( 'admin_menu', '__advsettings_hide_update_message', 2 );
+	function __advsettings_hide_update_message() {
+		remove_action( 'admin_notices', 'update_nag', 3 );
+	}
 }
 
 # Add a Custom Dashboard Logo
@@ -162,7 +165,8 @@ if ( advset_option('remove_pingbacks_trackbacks_count') ) {
 	function __advsettings_comment_count( $count ) {
 		if ( ! is_admin_area() ) {
 			global $id;
-			$comments_by_type = &separate_comments(get_comments('status=approve&post_id=' . $id));
+			$comments = get_comments('status=approve&post_id=' . $id);
+			$comments_by_type = separate_comments($comments);
 			return count($comments_by_type['comment']);
 		}
 		else {
@@ -903,19 +907,19 @@ function advset_register_post_types() {
 		);
 
 		$post_types[$type] = array(
-			'labels' 		=> $labels,
-			'public' 		=> (bool)@$public,
-			'publicly_queryable' => (bool)@$publicly_queryable,
-			'show_ui' 		=> (bool)@$show_ui,
-			'show_in_menu' 	=> (bool)@$show_in_menu,
-			'query_var' 	=> (bool)@$query_var,
-			#'rewrite' 		=> array( 'slug' => 'book' ),
-			#'capability_type' => 'post',
-			'has_archive' 	=> (bool)@$has_archive,
-			'hierarchical' 	=> (bool)@$hierarchical,
-			#'menu_position' => (int)@$menu_position,
-			'supports' 		=> (array)$supports,
-			'taxonomies' 	=> (array)$taxonomies,
+			'labels'              => $labels,
+			'public'              => (bool) (isset($public) ? $public : false),
+			'publicly_queryable'  => (bool) (isset($publicly_queryable) ? $publicly_queryable : false),
+			'show_ui'             => (bool) (isset($show_ui) ? $show_ui : false),
+			'show_in_menu'        => (bool) (isset($show_in_menu) ? $show_in_menu : false),
+			'query_var'           => (bool) (isset($query_var) ? $query_var : false),
+			#'rewrite'             => array( 'slug' => 'book' ),
+			#'capability_type'     => 'post',
+			'has_archive'         => (bool) (isset($has_archive) ? $has_archive : false),
+			'hierarchical'        => (bool) (isset($hierarchical) ? $hierarchical : false),
+			#'menu_position'       => (int)@$menu_position,
+			'supports'            => (array) (empty($supports) ? [] : $supports),
+			'taxonomies'          => (array) (empty($taxonomies) ? [] : $taxonomies),
 		);
 
 		update_option( 'adv_post_types', $post_types );
