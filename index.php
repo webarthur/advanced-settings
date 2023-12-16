@@ -187,7 +187,7 @@ if( advset_option('feedburner') ) {
 			return $output;
 
 		if( strpos(advset_option('feedburner'), '/')===FALSE )
-			return esc_url( 'http://feeds.feedburner.com/'.advset_option('feedburner') );
+			return esc_url( 'https://feeds.feedburner.com/'.advset_option('feedburner') );
 		else
 			return esc_url( advset_option('feedburner') );
 	}
@@ -655,7 +655,7 @@ if( !is_admin_area() && advset_option('jquery_remove_migrate') ) {
 if( advset_option('jquery_cnd') ) {
 	function advset_jquery_cnd() {
 		wp_deregister_script('jquery');
-		wp_register_script('jquery', ("//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"), false);
+		wp_register_script('jquery', ("https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"), false);
 		wp_enqueue_script('jquery');
 	}
 	add_action('wp_enqueue_scripts', 'advset_jquery_cnd');
