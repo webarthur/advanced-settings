@@ -2,8 +2,8 @@
 Plugin Name: Advanced Settings
 Author: webarthur
 Contributors: webarthur
-Author URI: https://ronconi.dev/
-Plugin URI: https://ronconi.dev/portfolio/advanced-settings.html
+Author URI: https://devarthur.com/
+Plugin URI: https://wordpress.org/plugins/advanced-settings/
 Tags: settings, performance, speed, admin, post type, menu, page, image, setting, images, google, analytics, compress, html, thumbnail, auto save, seo, keywords, favicon, feedburner, compact, comments, remove comments, hide comments, author, resize at upload, auto post thumbnails, filters, widget, option
 Requires at least: 3.0
 Tested up to: 5.5.3
@@ -89,7 +89,7 @@ This is an essential plugin for your WordPress websites.
 
 * Disable wp filters/hooks
 
-Visit: https://ronconi.dev/
+Visit: [devarthur.com](https://devarthur.com/)
 
 Contribute on github: [github.com/webarthur/advanced-settings](https://github.com/webarthur/advanced-settings)
 

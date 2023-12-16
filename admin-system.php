@@ -27,7 +27,7 @@
 
 					<p>
 						<label for="dashboard_logo">
-							<input name="dashboard_logo" type="text" size="50" placeholder="<?php _e('https://ronconi.dev/dashboard-logo-example.png') ?>" id="dashboard_logo" value="<?php echo advset_option('dashboard_logo') ?>" />
+							<input name="dashboard_logo" type="text" size="50" placeholder="<?php _e('https://www.example.com/your-custom-logo.png') ?>" id="dashboard_logo" value="<?php echo advset_option('dashboard_logo') ?>" />
 							<i style="color:#999">(<?php _e('paste your custom dashboard logo here') ?>)</i>
 							</label>
 					</p>

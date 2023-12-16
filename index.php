@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Advanced Settings
-Plugin URI: https://ronconi.dev/wordpress/advanced-settings/
+Plugin URI: https://wordpress.org/plugins/advanced-settings/
 Description: Advanced settings for WordPress.
 Author: Arthur Ronconi
-Author URI: https://ronconi.dev
+Author URI: https://devarthur.com/
 Version: 2.3.4
 */
 
@@ -27,7 +27,7 @@ if ( ! function_exists( 'is_admin_area' ) ) {
 
 if( is_admin() ) {
 
-	define('ADVSET_URL', 'https://ronconi.dev/wordpress/advanced-settings/');
+	define('ADVSET_URL', 'https://wordpress.org/plugins/advanced-settings/');
 
 	# Admin menu
 	add_action('admin_menu', 'advset_menu');
@@ -949,9 +949,9 @@ function advset_powered () {
 			#advset_powered { text-decoration:none; color:#666; font-size:16px }
 			#advset_powered:hover { text-decoration:underline; color:inherit }
 			</style>
-			<a id="advset_powered" target="_blank" href="https://ronconi.dev">
+			<a id="advset_powered" target="_blank" href="https://devarthur.com/">
 				<small>'. __('Powered By:').'</small><br />
-				<strong>ronconi.dev</strong>
+				<strong>devarthur.com</strong>
 			</a>
 		</div>
 ';

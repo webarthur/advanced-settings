@@ -54,6 +54,6 @@ This is an essential plugin for your WordPress sites.
 - Load merged removed scripts in footer
 and more to come ...
 
-Visit: http://araujo.cc/
+Visit: https://devarthur.com/
 
 "Simplicity is the ultimate sophistication" -- Da Vinci
