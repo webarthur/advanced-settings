@@ -3,7 +3,23 @@ Advanced Settings for WordPress
 
 This is an essential plugin for your WordPress sites.
 
-### New Features
+## Instalation
+
+Installing with wp cli:
+
+```
+$ wp plugin install advanced-settings --activate
+```
+
+Installing with git:
+
+```
+$ cd wp-content/plugins
+$ git clone https://github.com/webarthur/advanced-settings.git
+```
+
+
+## New Features
 
 * New admin page: Scripts
 * Remove *type="text/javascript"* attribute from &lt;script&gt; tag
@@ -11,7 +27,7 @@ This is an essential plugin for your WordPress sites.
 * Merge and include removed scripts
 * Load merged removed scripts in footer
 
-### What can this do?
+## What can this do?
 
 - Manage Post Types
 - Disable The “Please Update Now” Message On WordPress Dashboard
