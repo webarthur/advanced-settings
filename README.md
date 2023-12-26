@@ -18,6 +18,11 @@ $ cd wp-content/plugins
 $ git clone https://github.com/webarthur/advanced-settings.git
 ```
 
+Manual installation:
+
+1. Download plugin file from https://wordpress.com/pt-br/plugins/advanced-settings
+2. Decompress to wp-content/plugins folder
+3. Active the plugin on wp-admin
 
 ## New Features
 
