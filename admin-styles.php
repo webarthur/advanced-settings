@@ -57,8 +57,8 @@
 
 							$src = (strpos($script->src, '/')===0? get_site_url() : '') . $script->src;
 
-							$css = file_get_contents($src);
-							$urlTest = strpos($css, 'url(')>-1;
+							// $css = file_get_contents($src);
+							// $urlTest = strpos($css, 'url(')>-1;
 
 							echo "<label style='width:100%; display:inline-block;' for='$check_name'> <input id='$check_name' name='$check_name' type='checkbox' style='float:left; margin-top:0' value='$script->handle' $cheked /> ";
 							echo "<div style='overflow:auto'><b>$script->handle</b> ($script->ver)";
@@ -68,27 +68,27 @@
 							if ($script->deps) {
 								echo '<br /> <small style="color:#888">dependency: '.implode(', ', $script->deps).'</small>';
 							}
-							if ($urlTest) {
-								$urls = preg_match_all('/url\([^\)]+\)/', $css, $matches);
-								$url_replacements = [];
-								foreach ($matches[0] as $match) {
-									if (!preg_match('/url\([^a-z]*(http|data)/i', $match)) {
-										$newUrl = preg_replace("/(url\(['\"]*)/", "$0".dirname($src).'/', $match);
-										$url_replacements[] = (object) ['old' => $match, 'new' => $newUrl];
-									}
-									else {
-										$newUrl = $match;
-									}
-								}
-								if (count($url_replacements))
-								{
-									echo '<br /> <small style="color:red">Image URL replaces:</small>';
-									foreach ($url_replacements as $url_replacement)
-									{
-										echo '<br /> <small> <small> &nbsp; &nbsp; &bull; '.esc_html($url_replacement->old).' &rsaquo; '.esc_html($url_replacement->new).'</small></small>';
-									}
-								}
-							}
+							// if ($urlTest) {
+							// 	$urls = preg_match_all('/url\([^\)]+\)/', $css, $matches);
+							// 	$url_replacements = [];
+							// 	foreach ($matches[0] as $match) {
+							// 		if (!preg_match('/url\([^a-z]*(http|data)/i', $match)) {
+							// 			$newUrl = preg_replace("/(url\(['\"]*)/", "$0".dirname($src).'/', $match);
+							// 			$url_replacements[] = (object) ['old' => $match, 'new' => $newUrl];
+							// 		}
+							// 		else {
+							// 			$newUrl = $match;
+							// 		}
+							// 	}
+							// 	if (count($url_replacements))
+							// 	{
+							// 		echo '<br /> <small style="color:red">Image URL replaces:</small>';
+							// 		foreach ($url_replacements as $url_replacement)
+							// 		{
+							// 			echo '<br /> <small> <small> &nbsp; &nbsp; &bull; '.esc_html($url_replacement->old).' &rsaquo; '.esc_html($url_replacement->new).'</small></small>';
+							// 		}
+							// 	}
+							// }
 							echo '</div></label>';
 						}
 						echo '</fieldset>';
