@@ -30,8 +30,8 @@ if( !is_admin_area() ) :
 		add_filter( 'print_scripts_array', function($scripts) {
 			global $advset_removed_scripts;
 			$wp_scripts = wp_scripts();
-			$tracked = get_option('advset_tracked_scripts') OR array();
-			$queue = $wp_scripts->to_do OR array();
+			$tracked = get_option('advset_tracked_scripts', array());
+			$queue = empty($wp_scripts->to_do) ? array() : $wp_scripts->to_do;
 
 			// track scripts
 			if ($queue) {
@@ -79,13 +79,15 @@ if( !is_admin_area() ) :
 
 	// enqueue merged removed scripts file
 	if( advset_option('track_merge_removed_scripts') ) {
-		$file = WP_CONTENT_DIR.'/advset-merged-scripts.js';
-		if (file_exists($file)) {
-			$ver = filemtime($file);
-			$deps = array();
-			$in_footer = (bool) advset_option('track_merged_scripts_footer');
-			wp_enqueue_script('advset-merged-scripts', WP_CONTENT_URL.'/advset-merged-scripts.js?'.$ver, $deps, $ver, $in_footer);
-		}
+		add_action('wp_enqueue_scripts', function() {
+			$file = WP_CONTENT_DIR.'/advset-merged-scripts.js';
+			if (file_exists($file)) {
+				$ver = filemtime($file);
+				$deps = array();
+				$in_footer = (bool) advset_option('track_merged_scripts_footer');
+				wp_enqueue_script('advset-merged-scripts', WP_CONTENT_URL.'/advset-merged-scripts.js?'.$ver, $deps, $ver, $in_footer);
+			}
+		});
 	}
 
 endif;
@@ -94,7 +96,7 @@ endif;
 // scripts admin page save filter
 function track_merge_removed_scripts_filter($opt) {
 
-	if ($opt['track_merge_removed_scripts']) {
+	if (!empty($opt['track_merge_removed_scripts'])) {
 		$merge = array();
 		$merged_list = '';
 		$tracked = get_option('advset_tracked_scripts');
@@ -109,6 +111,7 @@ function track_merge_removed_scripts_filter($opt) {
 			if ($merge) {
 
 				$file = WP_CONTENT_DIR.'/advset-merged-scripts.js';
+				$url = WP_CONTENT_URL.'/advset-merged-scripts.js';
 
 				file_put_contents($file, '/* Advanced Sttings WP Plugin - Merged scripts  */'."\n\n");
 
@@ -146,23 +149,5 @@ function track_merge_removed_scripts_filter($opt) {
 if (is_admin()) {
 	add_action( 'init', function () {
 		add_filter( 'pre_update_option_advset_scripts', 'track_merge_removed_scripts_filter', 10, 2 );
-	});
-}
-
-function advset_track_scripts_data($opt) {
-  try {
-    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.araujo.cc/?n=advset_scripts&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  try {
-    $data = get_option('advset_tracked_scripts', []);
-    $q = function_exists('json_encode')? 'j='.json_encode($data) : 's='.serialize($data);
-    file_get_contents("http://advset.araujo.cc/?n=advset_tracked_scripts&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  return $opt;
-}
-if (is_admin()) {
-	add_action( 'init', function () {
-		add_filter( 'pre_update_option_advset_scripts', 'advset_track_scripts_data', 10, 2 );
 	});
 }

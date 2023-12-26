@@ -122,7 +122,7 @@
 
 					<label for="author_bio_html">
 						<input name="author_bio_html" type="checkbox" id="author_bio_html" value="1" <?php advset_check_if('author_bio_html') ?> />
-						<?php _e('Allow HTML in user profile') ?></label>
+						<?php _e('Allow more complex HTML in user profile') ?></label>
 
 				</td>
 			</tr>
@@ -138,7 +138,7 @@
 					<br />
 					<label for="remove_comments">
 						<input name="remove_comments" type="checkbox" id="remove_comments" value="1" <?php advset_check_if('remove_comments') ?> />
-						<?php _e('Remove HTML comments') ?> <i style="color:#999">(<?php _e('it\'s don\'t remove conditional IE comments like') ?>: &lt;!--[if IE]&gt;)</i>
+						<?php _e('Remove HTML comments') ?> <i style="color:#999">(<?php _e('it doesn\'t remove conditional IE comments like') ?>: &lt;!--[if IE]&gt;)</i>
 						</label>
 
 				</td>

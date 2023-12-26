@@ -70,15 +70,23 @@
 							}
 							if ($urlTest) {
 								$urls = preg_match_all('/url\([^\)]+\)/', $css, $matches);
-								echo '<br /> <small style="color:red">Image URL replaces:</small>';
+								$url_replacements = [];
 								foreach ($matches[0] as $match) {
 									if (!preg_match('/url\([^a-z]*(http|data)/i', $match)) {
 										$newUrl = preg_replace("/(url\(['\"]*)/", "$0".dirname($src).'/', $match);
+										$url_replacements[] = (object) ['old' => $match, 'new' => $newUrl];
 									}
 									else {
 										$newUrl = $match;
 									}
-									echo '<br /> <small> <small> &nbsp; &nbsp; &bull; '.$match.' &rsaquo; '.$newUrl.'</small></small>';
+								}
+								if (count($url_replacements))
+								{
+									echo '<br /> <small style="color:red">Image URL replaces:</small>';
+									foreach ($url_replacements as $url_replacement)
+									{
+										echo '<br /> <small> <small> &nbsp; &nbsp; &bull; '.esc_html($url_replacement->old).' &rsaquo; '.esc_html($url_replacement->new).'</small></small>';
+									}
 								}
 							}
 							echo '</div></label>';

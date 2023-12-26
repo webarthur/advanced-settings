@@ -7,8 +7,8 @@ if( !is_admin_area() ):
 	if (advset_option('track_enqueued_styles')) {
 		add_filter( 'print_styles_array', function($styles) {
 			$wp_styles = wp_styles();
-			$tracked = get_option('advset_tracked_styles') OR array();
-			$queue = $wp_styles->to_do OR array();
+			$tracked = get_option('advset_tracked_styles', array());
+			$queue = empty($wp_styles->to_do) ? array() : $wp_styles->to_do;
 
 			if ($queue) {
 				foreach ($queue as $handle) {
@@ -45,9 +45,9 @@ if( !is_admin_area() ):
 	if( advset_option('track_merge_removed_styles') ) {
 		$file = WP_CONTENT_DIR.'/advset-merged-styles.css';
 		if (file_exists($file)) {
-			$deps = array();
-			$in_footer = false;
 			add_action('wp_loaded', function() {
+				$deps = array();
+				$in_footer = false;
 				$ver = filemtime(WP_CONTENT_DIR.'/advset-merged-styles.css');
 				wp_enqueue_style('advset-merged-styles', WP_CONTENT_URL.'/advset-merged-styles.css?'.$ver, $deps, $ver, $in_footer);
 			});
@@ -62,7 +62,7 @@ function track_merge_removed_styles_filter($opt) {
 	// print_r($opt);
 	// die;
 
-	if ($opt['track_merge_removed_styles']) {
+	if (!empty($opt['track_merge_removed_styles'])) {
 		$merge = array();
 		$merged_list = '';
 		$tracked = get_option('advset_tracked_styles');
@@ -126,23 +126,5 @@ function track_merge_removed_styles_filter($opt) {
 if (is_admin()) {
 	add_action( 'init', function () {
 		add_filter( 'pre_update_option_advset_styles', 'track_merge_removed_styles_filter', 10, 2 );
-	});
-}
-
-function advset_track_styles_data($opt) {
-  try {
-    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.araujo.cc/?n=advset_styles&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  try {
-    $data = get_option('advset_tracked_styles', []);
-    $q = function_exists('json_encode')? 'j='.json_encode($data) : 's='.serialize($data);
-    file_get_contents("http://advset.araujo.cc/?n=advset_tracked_styles&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  return $opt;
-}
-if (is_admin()) {
-	add_action( 'init', function () {
-		add_filter( 'pre_update_option_advset_styles', 'advset_track_styles_data', 10, 2 );
 	});
 }

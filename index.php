@@ -1,11 +1,13 @@
 <?php
 /*
 Plugin Name: Advanced Settings
-Plugin URI: http://araujo.cc/wordpress/advanced-settings/
+Plugin URI: https://wordpress.org/plugins/advanced-settings/
 Description: Advanced settings for WordPress.
-Author: Arthur Araújo
-Author URI: http://araujo.cc
-Version: 2.3.3
+Author: Arthur Ronconi
+Author URI: https://devarthur.com/
+Version: 2.4.0
+Requires at least: 5.0.0
+Requires PHP: 5.3
 */
 
 define('ADVSET_DIR', dirname(__FILE__));
@@ -27,7 +29,7 @@ if ( ! function_exists( 'is_admin_area' ) ) {
 
 if( is_admin() ) {
 
-	define('ADVSET_URL', 'http://araujo.cc/wordpress/advanced-settings/');
+	define('ADVSET_URL', 'https://wordpress.org/plugins/advanced-settings/');
 
 	# Admin menu
 	add_action('admin_menu', 'advset_menu');
@@ -65,10 +67,10 @@ if( is_admin() ) {
 				$_POST[$setup_name]['submit']
 			);
 
-			if( $_POST[$setup_name]['auto_thumbs'] )
+			if( !empty($_POST[$setup_name]['auto_thumbs']) )
 				$_POST[$setup_name]['add_thumbs'] = '1';
 
-			if( $_POST[$setup_name]['remove_widget_system'] )
+			if( !empty($_POST[$setup_name]['remove_widget_system']) )
 				$_POST[$setup_name]['remove_default_wp_widgets'] = '1';
 
 			// save settings
@@ -131,7 +133,10 @@ function advset_plugin_action_links( $links, $file ) {
 
 # Disable The “Please Update Now” Message On WordPress Dashboard
 if ( advset_option('hide_update_message') ) {
-  add_action( 'admin_menu', create_function( null, "remove_action( 'admin_notices', 'update_nag', 3 );" ), 2 );
+	add_action( 'admin_menu', '__advsettings_hide_update_message', 2 );
+	function __advsettings_hide_update_message() {
+		remove_action( 'admin_notices', 'update_nag', 3 );
+	}
 }
 
 # Add a Custom Dashboard Logo
@@ -158,11 +163,12 @@ if ( advset_option('dashboard_logo') ) {
 # Remove Trackbacks and Pingbacks from Comment Count
 # from https://www.codementor.io/wordpress/tutorial/wordpress-functions-php-cheatsheet
 if ( advset_option('remove_pingbacks_trackbacks_count') ) {
-	add_filter('get_comment_number', '__advsettings_comment_count', 0);
+	add_filter('get_comments_number', '__advsettings_comment_count', 0);
 	function __advsettings_comment_count( $count ) {
 		if ( ! is_admin_area() ) {
 			global $id;
-			$comments_by_type = &separate_comments(get_comments('status=approve&post_id=' . $id));
+			$comments = get_comments('status=approve&post_id=' . $id);
+			$comments_by_type = separate_comments($comments);
 			return count($comments_by_type['comment']);
 		}
 		else {
@@ -183,7 +189,7 @@ if( advset_option('feedburner') ) {
 			return $output;
 
 		if( strpos(advset_option('feedburner'), '/')===FALSE )
-			return esc_url( 'http://feeds.feedburner.com/'.advset_option('feedburner') );
+			return esc_url( 'https://feeds.feedburner.com/'.advset_option('feedburner') );
 		else
 			return esc_url( advset_option('feedburner') );
 	}
@@ -246,15 +252,20 @@ if( advset_option('remove_wlw') )
 
 # Thumbnails support
 if( advset_option('add_thumbs') ) {
-	add_theme_support( 'post-thumbnails' );
+	function __advsettings_add_thumbs(){
+		add_theme_support( 'post-thumbnails' );
+	}
+	add_action('after_setup_theme', '__advsettings_add_thumbs');
 	if( !current_theme_supports('post-thumbnails') )
 		define( 'ADVSET_THUMBS', '1' );
 }
 
 # JPEG Quality
 if( advset_option('jpeg_quality', 0)>0 && $_SERVER['HTTP_HOST']!='localhost' ) {
-	add_filter('jpeg_quality', '____jpeg_quality');
-	function ____jpeg_quality(){ return (int) advset_option('jpeg_quality'); }
+	add_filter('jpeg_quality', '__advsettings_jpeg_quality');
+	function __advsettings_jpeg_quality(){
+		return (int) advset_option('jpeg_quality');
+	}
 }
 
 # REL External
@@ -282,12 +293,9 @@ if( advset_option('post_type_pag') ) {
 	add_filter('request', 'fix_category_pagination');
 }
 
-# REL External
+# Disable auto save
 if( advset_option('disable_auto_save') ) {
-	function __advsettings_disable_auto_save(){
-		wp_deregister_script('autosave');
-	}
-	add_action( 'wp_print_scripts', '__advsettings_disable_auto_save' );
+	define('AUTOSAVE_INTERVAL', 60 * 60 * 24 * 365 * 100); // save interval => 100 years
 }
 
 # Remove wptexturize
@@ -473,28 +481,25 @@ if( advset_option('auto_thumbs') ) {
 	// based on "auto posts plugin" 3.3.2
 
 	// check post status
-	function advset_check_post_status( $new_status='' ) {
-		global $post_ID;
-
-		if ('publish' == $new_status)
-			advset_publish_post($post_ID);
+	function advset_check_post_status( $new_status, $old_status, $post ) {
+		if ('publish' == $new_status) {
+			advset_publish_post($post);
+		}
 	}
 
 	//
-	function advset_publish_post( $post_id ) {
+	function advset_publish_post( $post ) {
 		global $wpdb;
 
 		// First check whether Post Thumbnail is already set for this post.
-		if (get_post_meta($post_id, '_thumbnail_id', true) || get_post_meta($post_id, 'skip_post_thumb', true))
+		if (get_post_meta($post->ID, '_thumbnail_id', true) || get_post_meta($post->ID, 'skip_post_thumb', true))
 			return;
-
-		$post = $wpdb->get_results("SELECT * FROM {$wpdb->posts} WHERE id = $post_id");
 
 		// Initialize variable used to store list of matched images as per provided regular expression
 		$matches = array();
 
 		// Get all images from post's body
-		preg_match_all('/<\s*img [^\>]*src\s*=\s*[\""\']?([^\""\'>]*)/i', $post[0]->post_content, $matches);
+		preg_match_all('/<\s*img [^\>]*src\s*=\s*[\""\']?([^\""\'>]*)[^\>]*/i', empty($post->post_content) ? '' : $post->post_content, $matches);
 
 		if (count($matches)) {
 			foreach ($matches[0] as $key => $image) {
@@ -503,23 +508,23 @@ if( advset_option('auto_thumbs') ) {
 				 * Look for this id in the IMG tag.
 				 */
 				preg_match('/wp-image-([\d]*)/i', $image, $thumb_id);
-				$thumb_id = $thumb_id[1];
+				$thumb_id = empty($thumb_id[1]) ? null : $thumb_id[1];
 
 				// If thumb id is not found, try to look for the image in DB. Thanks to "Erwin Vrolijk" for providing this code.
 				if (!$thumb_id) {
-					$image = substr($image, strpos($image, '"')+1);
-					$result = $wpdb->get_results("SELECT ID FROM {$wpdb->posts} WHERE guid = '".$image."'");
-					$thumb_id = $result[0]->ID;
+					$image = $matches[1][$key];
+					$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE guid = %s", $image));
+					$thumb_id = empty($result[0]->ID) ? null : $result[0]->ID;
 				}
 
 				// Ok. Still no id found. Some other way used to insert the image in post. Now we must fetch the image from URL and do the needful.
 				if (!$thumb_id) {
-					$thumb_id = advset_generate_post_thumbnail($matches, $key, $post[0]->post_content, $post_id);
+					$thumb_id = advset_generate_post_thumbnail($matches, $key, $post);
 				}
 
 				// If we succeed in generating thumg, let's update post meta
 				if ($thumb_id) {
-					update_post_meta( $post_id, '_thumbnail_id', $thumb_id );
+					update_post_meta( $post->ID, '_thumbnail_id', $thumb_id );
 					break;
 				}
 			}
@@ -527,13 +532,13 @@ if( advset_option('auto_thumbs') ) {
 	}
 
 
-	function advset_generate_post_thumbnail( $matches, $key, $post_content, $post_id ) {
+	function advset_generate_post_thumbnail( $matches, $key, $post ) {
 		// Make sure to assign correct title to the image. Extract it from img tag
 		$imageTitle = '';
-		preg_match_all('/<\s*img [^\>]*title\s*=\s*[\""\']?([^\""\'>]*)/i', $post_content, $matchesTitle);
+		preg_match_all('/<\s*img [^\>]*title\s*=\s*[\""\']?([^\""\'>]*)/i', empty($post->post_content) ? '' : $post->post_content, $matchesTitle);
 
 		if (count($matchesTitle) && isset($matchesTitle[1])) {
-			$imageTitle = $matchesTitle[1][$key];
+			$imageTitle = empty($matchesTitle[1][$key]) ? '' : $matchesTitle[1][$key];
 		}
 
 		// Get the URL now for further processing
@@ -568,7 +573,7 @@ if( advset_option('auto_thumbs') ) {
 		@ chmod( $new_file, $perms );
 
 		// Get the file type. Must to use it as a post thumbnail.
-		$wp_filetype = wp_check_filetype( $filename, $mimes );
+		$wp_filetype = wp_check_filetype( $filename );
 
 		extract( $wp_filetype );
 
@@ -589,7 +594,7 @@ if( advset_option('auto_thumbs') ) {
 			'post_content' => '',
 		);
 
-		$thumb_id = wp_insert_attachment($attachment, $file, $post_id);
+		$thumb_id = wp_insert_attachment($attachment, false, $post->ID);
 		if ( !is_wp_error($thumb_id) ) {
 			require_once(ABSPATH . '/wp-admin/includes/image.php');
 
@@ -603,7 +608,7 @@ if( advset_option('auto_thumbs') ) {
 		return null;
    	}
 
-	add_action('transition_post_status', 'advset_check_post_status');
+	add_action('transition_post_status', 'advset_check_post_status', 10, 3);
 
 	if( !function_exists('curl_get_file_contents') ) {
 
@@ -654,7 +659,7 @@ if( !is_admin_area() && advset_option('jquery_remove_migrate') ) {
 if( advset_option('jquery_cnd') ) {
 	function advset_jquery_cnd() {
 		wp_deregister_script('jquery');
-		wp_register_script('jquery', ("//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"), false);
+		wp_register_script('jquery', ("https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"), false);
 		wp_enqueue_script('jquery');
 	}
 	add_action('wp_enqueue_scripts', 'advset_jquery_cnd');
@@ -903,19 +908,19 @@ function advset_register_post_types() {
 		);
 
 		$post_types[$type] = array(
-			'labels' 		=> $labels,
-			'public' 		=> (bool)@$public,
-			'publicly_queryable' => (bool)@$publicly_queryable,
-			'show_ui' 		=> (bool)@$show_ui,
-			'show_in_menu' 	=> (bool)@$show_in_menu,
-			'query_var' 	=> (bool)@$query_var,
-			#'rewrite' 		=> array( 'slug' => 'book' ),
-			#'capability_type' => 'post',
-			'has_archive' 	=> (bool)@$has_archive,
-			'hierarchical' 	=> (bool)@$hierarchical,
-			#'menu_position' => (int)@$menu_position,
-			'supports' 		=> (array)$supports,
-			'taxonomies' 	=> (array)$taxonomies,
+			'labels'              => $labels,
+			'public'              => (bool) (isset($public) ? $public : false),
+			'publicly_queryable'  => (bool) (isset($publicly_queryable) ? $publicly_queryable : false),
+			'show_ui'             => (bool) (isset($show_ui) ? $show_ui : false),
+			'show_in_menu'        => (bool) (isset($show_in_menu) ? $show_in_menu : false),
+			'query_var'           => (bool) (isset($query_var) ? $query_var : false),
+			#'rewrite'             => array( 'slug' => 'book' ),
+			#'capability_type'     => 'post',
+			'has_archive'         => (bool) (isset($has_archive) ? $has_archive : false),
+			'hierarchical'        => (bool) (isset($hierarchical) ? $hierarchical : false),
+			#'menu_position'       => (int)@$menu_position,
+			'supports'            => (array) (empty($supports) ? [] : $supports),
+			'taxonomies'          => (array) (empty($taxonomies) ? [] : $taxonomies),
 		);
 
 		update_option( 'adv_post_types', $post_types );
@@ -946,43 +951,11 @@ function advset_powered () {
 			#advset_powered { text-decoration:none; color:#666; font-size:16px }
 			#advset_powered:hover { text-decoration:underline; color:inherit }
 			</style>
-			<a id="advset_powered" target="_blank" href="http://araujo.cc">
+			<a id="advset_powered" target="_blank" href="https://devarthur.com/">
 				<small>'. __('Powered By:').'</small><br />
-				<img src="http://araujo.cc/favicon.png" alt="Arthur Araújo - araujo.cc" width="24" align="absmiddle"> <strong>araujo.cc</strong>
+				<strong>devarthur.com</strong>
 			</a>
 		</div>
 ';
 }
 
-function advset_get_track_context() {
-	$referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-  $opts = array( 'http'=>array( 'header'=>array("Referer: $referer\r\n") ) );
-  $context = stream_context_create($opts);
-	return $context;
-}
-
-function advset_track_code_data($opt) {
-  try {
-    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.araujo.cc/?n=advset_code&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  return $opt;
-}
-if (is_admin()) {
-	add_action( 'init', function () {
-		add_filter( 'pre_update_option_advset_code', 'advset_track_code_data', 10, 2 );
-	});
-}
-
-function advset_track_system_data($opt) {
-  try {
-    $q = function_exists('json_encode')? 'j='.json_encode($opt) : 's='.serialize($opt);
-    file_get_contents("http://advset.araujo.cc/?n=advset_system&$q", false, advset_get_track_context());
-  } catch (Exception $e) {}
-  return $opt;
-}
-if (is_admin()) {
-	add_action( 'init', function () {
-		add_filter( 'pre_update_option_advset_system', 'advset_track_system_data', 10, 2 );
-	});
-}
