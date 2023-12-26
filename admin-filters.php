@@ -23,7 +23,7 @@
     <tr><td>&nbsp;</td><td><strong>'.__('priority').'</strong></td></tr>';
 
   foreach($hook as $tag => $priority){
-    echo "<tr><th align='left'>[<a target='_blank' href='http://wpseek.com/$tag/'>$tag</a>]</th></tr>";
+    echo "<tr><th align='left'>[<a target='_blank' href='https://developer.wordpress.org/reference/hooks/$tag/'>$tag</a>]</th></tr>";
     echo '<tr><td>';
     foreach($priority->callbacks as $priority => $function){
       foreach($function as $function => $properties) {
@@ -32,7 +32,7 @@
 
         echo "<tr><td> <label><input type='checkbox' name='$tag' value='$function' $checked />
           $function</label>
-          <sub><a target='_blank' href='http://wpseek.com/$function/'>help</a></sub></td>
+          <sub><a target='_blank' href='https://developer.wordpress.org/reference/hooks/$function/'>help</a></sub></td>
           <td align='right'>$priority</td></tr>";
         }
     }
