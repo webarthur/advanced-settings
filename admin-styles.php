@@ -20,10 +20,15 @@
 
 		<?php settings_fields( 'advanced-settings' ); ?>
 
+		<h2 class="title">Tracking styles</h2>
+		<p>
+			<?php _e('Check the "Track enqueued styles" option and browse the website pages and refresh this page to show the captured styles.'); ?>
+		</p>
+
 		<table class="form-table">
 
 			<tr valign="top">
-				<th scope="row"><?php _e('Track'); ?></th>
+				<th scope="row"><?php _e('Options'); ?></th>
 				<td>
 					<p>
 						<label for="track_enqueued_styles">
@@ -43,59 +48,62 @@
 			<tr valign="top">
 				<th scope="row"><?php _e('Tracked Styles <br /> <i style="color:#999">Check to remove styles</i>'); ?></th>
 				<td>
-					<?php $tracked = get_option('advset_tracked_styles');
-					if ($tracked) {
-						echo '<fieldset>';
-						foreach ($tracked as $script) {
-							// print_r($script);
-							if (!$script->ver) {
-								$script->ver = '0';
+					
+					<p>
+						<?php $tracked = get_option('advset_tracked_styles');
+						if ($tracked) {
+							echo '<fieldset>';
+							foreach ($tracked as $script) {
+								// print_r($script);
+								if (!$script->ver) {
+									$script->ver = '0';
+								}
+
+								$check_name = 'remove_enqueued_style_'.$script->handle;
+								$cheked = advset_check_if($check_name, false);
+
+								$src = (strpos($script->src, '/')===0? get_site_url() : '') . $script->src;
+
+								// $css = file_get_contents($src);
+								// $urlTest = strpos($css, 'url(')>-1;
+
+								echo "<label style='width:100%; display:inline-block;' for='$check_name'> <input id='$check_name' name='$check_name' type='checkbox' style='float:left; margin-top:0' value='$script->handle' $cheked /> ";
+								echo "<div style='overflow:auto'><b>$script->handle</b> ($script->ver)";
+								if ($src) {
+									echo "<br /><small>$src</small>";
+								}
+								if ($script->deps) {
+									echo '<br /> <small style="color:#888">dependency: '.implode(', ', $script->deps).'</small>';
+								}
+								// if ($urlTest) {
+								// 	$urls = preg_match_all('/url\([^\)]+\)/', $css, $matches);
+								// 	$url_replacements = [];
+								// 	foreach ($matches[0] as $match) {
+								// 		if (!preg_match('/url\([^a-z]*(http|data)/i', $match)) {
+								// 			$newUrl = preg_replace("/(url\(['\"]*)/", "$0".dirname($src).'/', $match);
+								// 			$url_replacements[] = (object) ['old' => $match, 'new' => $newUrl];
+								// 		}
+								// 		else {
+								// 			$newUrl = $match;
+								// 		}
+								// 	}
+								// 	if (count($url_replacements))
+								// 	{
+								// 		echo '<br /> <small style="color:red">Image URL replaces:</small>';
+								// 		foreach ($url_replacements as $url_replacement)
+								// 		{
+								// 			echo '<br /> <small> <small> &nbsp; &nbsp; &bull; '.esc_html($url_replacement->old).' &rsaquo; '.esc_html($url_replacement->new).'</small></small>';
+								// 		}
+								// 	}
+								// }
+								echo '</div></label>';
 							}
-
-							$check_name = 'remove_enqueued_style_'.$script->handle;
-							$cheked = advset_check_if($check_name, false);
-
-							$src = (strpos($script->src, '/')===0? get_site_url() : '') . $script->src;
-
-							// $css = file_get_contents($src);
-							// $urlTest = strpos($css, 'url(')>-1;
-
-							echo "<label style='width:100%; display:inline-block;' for='$check_name'> <input id='$check_name' name='$check_name' type='checkbox' style='float:left; margin-top:0' value='$script->handle' $cheked /> ";
-							echo "<div style='overflow:auto'><b>$script->handle</b> ($script->ver)";
-							if ($src) {
-								echo "<br /><small>$src</small>";
-							}
-							if ($script->deps) {
-								echo '<br /> <small style="color:#888">dependency: '.implode(', ', $script->deps).'</small>';
-							}
-							// if ($urlTest) {
-							// 	$urls = preg_match_all('/url\([^\)]+\)/', $css, $matches);
-							// 	$url_replacements = [];
-							// 	foreach ($matches[0] as $match) {
-							// 		if (!preg_match('/url\([^a-z]*(http|data)/i', $match)) {
-							// 			$newUrl = preg_replace("/(url\(['\"]*)/", "$0".dirname($src).'/', $match);
-							// 			$url_replacements[] = (object) ['old' => $match, 'new' => $newUrl];
-							// 		}
-							// 		else {
-							// 			$newUrl = $match;
-							// 		}
-							// 	}
-							// 	if (count($url_replacements))
-							// 	{
-							// 		echo '<br /> <small style="color:red">Image URL replaces:</small>';
-							// 		foreach ($url_replacements as $url_replacement)
-							// 		{
-							// 			echo '<br /> <small> <small> &nbsp; &nbsp; &bull; '.esc_html($url_replacement->old).' &rsaquo; '.esc_html($url_replacement->new).'</small></small>';
-							// 		}
-							// 	}
-							// }
-							echo '</div></label>';
+							echo '</fieldset>';
 						}
-						echo '</fieldset>';
-					}
-					else {
-						echo '<i>No tracked styles yet. Try browsing your website.</i>';
-					} ?>
+						else {
+							echo '<i>No tracked styles yet. Try browsing your website.</i>';
+						} ?>
+					</p>
 				</td>
 			</tr>
 

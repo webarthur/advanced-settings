@@ -43,9 +43,16 @@
 					</label>
 				</td>
 			</tr>
+		</table>
 
+		<h2 class="title">Tracking scripts</h2>
+		<p>
+			<?php _e('Check the "Track enqueued scripts" option and browse the website pages and refresh this page to show the captured scripts.'); ?>
+		</p>
+
+		<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><?php _e('Track'); ?></th>
+				<th scope="row"><?php _e('Options'); ?></th>
 				<td>
 					<p>
 						<label for="track_enqueued_scripts">
