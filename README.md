@@ -5,20 +5,20 @@ This is an essential plugin for your WordPress sites.
 
 ## Instalation
 
-Installing with wp cli:
+**Installing with wp cli:**
 
 ```
 $ wp plugin install advanced-settings --activate
 ```
 
-Installing with git:
+**Installing with git:**
 
 ```
 $ cd wp-content/plugins
 $ git clone https://github.com/webarthur/advanced-settings.git
 ```
 
-Manual installation:
+**Manual installation:**
 
 1. Download plugin file from https://wordpress.com/pt-br/plugins/advanced-settings
 2. Decompress to wp-content/plugins folder
