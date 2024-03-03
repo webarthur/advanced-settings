@@ -110,6 +110,9 @@ Upload plugin to your blog, activate it, then click on a setting options in admi
 
 == Changelog ==
 
+= 2.4.0 =
+* Updated code for WordPress version 6.4.2
+
 = 2.3.4 =
 * Updated code for WordPress version 5.5.3
 
