@@ -19,13 +19,8 @@ This is an essential plugin for your WordPress websites.
 
 = New Features =
 
-* New admin page: Scripts
-* New admin page: Styles
-* Remove *type="text/javascript"* attribute from &lt;script&gt; tag
-* Track and list enqueued scripts/styles
-* Merge and include removed scripts/styles
-* Load merged removed scripts in footer
-* Load merged removed styles
+* Disable author pages
+* Prevent installation of new default WordPress themes during core updates
 
 = Post types =
 
@@ -65,9 +60,11 @@ This is an essential plugin for your WordPress websites.
 * Disable widget system
 * Disable comment system
 * Disable Posts Auto Saving
+* Disable author pages
 * Automatically generate the Post Thumbnail (from the first image in post)
 * Set JPEG quality
 * Resize image at upload to max size
+* Prevent installation of new default WordPress themes during core updates
 * Display total number of executed SQL queries and page loading time
 
 = Scripts =
