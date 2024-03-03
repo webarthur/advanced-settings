@@ -69,7 +69,6 @@ This is an essential plugin for your WordPress websites.
 * Set JPEG quality
 * Resize image at upload to max size
 * Display total number of executed SQL queries and page loading time
-* Fix post type pagination
 
 = Scripts =
 
