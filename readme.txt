@@ -106,6 +106,10 @@ Upload plugin to your blog, activate it, then click on a setting options in admi
 
 == Changelog ==
 
+= 2.5.0 =
+* Add new feature: Disable author pages
+* Add new feature: Prevent installation of new default WordPress themes during core updates
+
 = 2.4.0 =
 * Updated code for WordPress version 6.4.2
 
