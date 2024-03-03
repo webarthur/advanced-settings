@@ -359,6 +359,25 @@ if( advset_option('remove_comments_system') ) {
 	add_action( 'wp_before_admin_bar_render', '__av_admin_bar_render' );
 }
 
+# Disable author pages
+if ( advset_option('disable_author_pages') ) {
+    function advset_disable_author_pages__template_redirect() {
+        global $wp_query;
+        if ( is_author() ) {
+            $wp_query->set_404();
+            status_header(404);
+        }
+    }
+    add_action( 'template_redirect', 'advset_disable_author_pages__template_redirect' );
+    function advset_disable_author_pages__wp_sitemaps_add_provider( $provider, $name ) {
+        if ( 'users' === $name ) {
+            return false;
+        }
+        return $provider;
+    }
+    add_filter( 'wp_sitemaps_add_provider', 'advset_disable_author_pages__wp_sitemaps_add_provider', 10, 2 );
+}
+
 # Google Analytics
 if( advset_option('analytics') ) {
 	add_action('wp_footer', '____analytics'); // Load custom styles

@@ -70,6 +70,13 @@
 							<?php _e('Disable Posts Auto Saving') ?>
 						</label>
 
+						<br />
+
+						<label for="disable_author_pages">
+							<input name="disable_author_pages" type="checkbox" id="disable_author_pages" value="1" <?php advset_check_if('disable_author_pages') ?> />
+							<?php _e('Disable Author Pages') ?>
+						</label>
+
 					</fieldset>
 				</td>
 			</tr>
