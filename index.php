@@ -391,6 +391,13 @@ gtag('config', '$ga_code')";
 	}
 }
 
+# core upgrade skip new bundled
+if ( advset_option('core_upgrade_skip_new_bundled') ) {
+    if (!defined('CORE_UPGRADE_SKIP_NEW_BUNDLED')) {
+        define('CORE_UPGRADE_SKIP_NEW_BUNDLED', true);
+    }
+}
+
 # Remove admin menu
 if( advset_option('show_query_num') ) {
 	function __show_sql_query_num(){
